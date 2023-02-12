@@ -1,8 +1,8 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-11 18:04:31
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-12 16:56:30
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
@@ -40,6 +40,12 @@ export class User {
     })
     experience: number
 
+    @Column({
+        default: 0,
+        comment: '金币'
+    })
+    coin: number
+
     @IsNumber()
     @Column({
         default: 1,
@@ -59,7 +65,7 @@ export class User {
         type: 'datetime',
         comment: '身份过期时间 为空时 永不过期',
     })
-    expireTime?: string
+    expireTime: string
 
 
     @Column({
@@ -142,10 +148,15 @@ export class User {
     isBaned: 0 | 1
 
     @Column({
-        nullable:true,
+        nullable: true,
         type: 'datetime',
         comment: '解封时间'
     })
     unBanedTime?: string
 
+    @Column({
+        default: 0,
+        comment: '是否注销账号'
+    })
+    isDelete: 0 | 1
 }

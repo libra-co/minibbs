@@ -1,3 +1,11 @@
+/*
+ * @Author: liuhongbo 916196375@qq.com
+ * @Date: 2023-02-12 12:52:25
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-12 16:19:42
+ * @FilePath: \minibbs\src\user\entities\userDetail.entity.ts
+ * @Description: userDetail表
+ */
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
@@ -52,4 +60,10 @@ export class UserDetail {
         comment: '在线时间'
     })
     activeTime: number
+
+    @Column({
+        default: 0,
+        comment: '是否注销账号'
+    })
+    isDelete: 0 | 1
 }
