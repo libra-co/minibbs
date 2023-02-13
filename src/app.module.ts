@@ -14,6 +14,7 @@ import { dataBaseConfig } from './const'
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FriendModule } from './friend/friend.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FriendModule } from './friend/friend.module';
     UserModule,
     AuthModule,
     FriendModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
