@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:26
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-14 00:06:38
+ * @LastEditTime: 2023-02-14 21:09:11
  * @FilePath: \minibbs\src\mail\mail.service.ts
  * @Description: mail service
  */
@@ -28,9 +28,12 @@ export class MailService {
   async create(createMailDto: CreateMailDto): Promise<CommonReturn> {
     try {
       return this.dataSource.transaction(async manager => {
-        const newMail = {
-          createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-          ...createMailDto,
+        const newMail = new Mail()
+        for (const field in createMailDto) {
+          if (Object.prototype.hasOwnProperty.call(createMailDto, field)) {
+            newMail[field] = createMailDto[field];
+          }
+          newMail.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
         }
         await manager.save(Mail, newMail)
         return {
@@ -51,7 +54,9 @@ export class MailService {
   async deleteOne(mid: string): Promise<CommonReturn> {
     try {
       return this.dataSource.transaction(async manger => {
+        console.log('mid', mid)
         const currentMall = await manger.findOne(Mail, { where: { mid } })
+        console.log('currentMall', currentMall)
         currentMall.isDelete = 1
         await manger.save(Mail, currentMall)
         return {
@@ -73,11 +78,11 @@ export class MailService {
     try {
       return this.dataSource.transaction(async manger => {
         const mailList = await manger.find(Mail, { where: { reciveUid: uid, isDelete: 0 } })
-        const deltedMailList = mailList.map(item => {
+        const deletedMailList = mailList.map(item => {
           item.isDelete = 1
           return item
         })
-        await manger.save(Mail, deltedMailList)
+        await manger.save(Mail, deletedMailList)
         return {
           message: '垃圾全部清理啦，邮箱干净如新！',
           status: HttpStatus.OK,

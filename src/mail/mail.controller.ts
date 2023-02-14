@@ -1,3 +1,11 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-14 16:14:17
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-14 16:52:14
+ * @FilePath: /minibbs/src/mail/mail.controller.ts
+ * @Description: maill controller
+ */
 import { Controller, Get, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { CreateMailDto, ListMailDto } from './dto/mail.dto';
@@ -14,7 +22,7 @@ export class MailController {
   }
 
   @Post('delete')
-  deleteOne(@Body() mid: string) {
+  deleteOne(@Body('mid') mid: string) {
     return this.mailService.deleteOne(mid)
   }
 

@@ -1,3 +1,11 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-11 00:04:44
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-14 17:30:49
+ * @FilePath: /minibbs/src/user/const.ts
+ * @Description: user const
+ */
 /**
  * @description 角色枚举
  * @param user 用户

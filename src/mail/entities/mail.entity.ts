@@ -1,17 +1,17 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:27
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-13 23:02:12
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-14 16:43:09
  * @FilePath: \minibbs\src\mail\entities\mail.entity.ts
  * @Description: mail Entity
  */
 
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Mail {
-    @PrimaryColumn('uuid')
+    @PrimaryGeneratedColumn('uuid')
     mid: string
 
     @Column({

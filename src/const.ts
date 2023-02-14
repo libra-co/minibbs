@@ -1,15 +1,13 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 23:07:03
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 17:12:35
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-13 10:02:16
  * @FilePath: /minibbs/src/const.ts
  * @Description: app 常量
  */
 
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { User } from "./user/entities/user.entity";
-import { UserDetail } from "./user/entities/userDetail.entity";
 
 // 数据库配置
 export const dataBaseConfig: TypeOrmModuleOptions = {
