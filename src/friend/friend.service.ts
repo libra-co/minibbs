@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 21:45:24
+ * @LastEditTime: 2023-02-13 23:04:58
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
@@ -34,7 +34,6 @@ export class FriendService {
     try {
       return this.dataSource.transaction(async entityMangeer => {
         const isAlreadyFriend = await this.friendRepository.findOne({ where: { uid, friendUid } })
-        console.log('isAlreadyFriend', isAlreadyFriend)
         if (isAlreadyFriend) {
           return {
             status: HttpStatus.BAD_REQUEST,
@@ -43,7 +42,6 @@ export class FriendService {
           }
         }
         const friendsResult = await this.userRepository.findOne({ where: { uid: friendUid } })
-        console.log('friendsResult', friendsResult)
         if (!friendsResult) {
           return {
             status: HttpStatus.BAD_REQUEST,
