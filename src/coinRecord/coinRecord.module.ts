@@ -11,9 +11,10 @@ import { CoinRecordService } from './coinRecord.service';
 import { CoinRecordController } from './coinRecord.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinRecord } from './entities/coinRecord.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CoinRecord])],
+  imports: [TypeOrmModule.forFeature([CoinRecord, User])],
   controllers: [CoinRecordController],
   providers: [CoinRecordService]
 })

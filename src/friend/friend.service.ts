@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-13 23:04:58
+ * @LastEditTime: 2023-02-14 23:26:43
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
+import { WithCommonPaginationConfig } from 'src/utils/utils';
 import { DataSource, Repository } from 'typeorm';
 import { GetFriendDto, GetFriendReturnDto } from './dto/friend.dto';
 import { Friend } from './entities/friend.entity';
@@ -89,29 +90,49 @@ export class FriendService {
     }
   }
 
-  async list(uid: number, getFriendDto: GetFriendDto): Promise<CommonReturn<GetFriendReturnDto[]>> {
-    const friendFinout = await this.friendRepository.find({
-      where: { uid },
-      select: ['friendUid', 'addTime', 'nickName'],
-      take: getFriendDto.pageSize || 9999999999,
-      skip: ((getFriendDto.pageNum - 1) * getFriendDto.pageSize) || 0,
-    })
-    const result = await Promise.all(friendFinout.map(async item => {
-      const currentUser = await this.userRepository.findOne({
-        where: { uid: item.friendUid },
-        select: ['username']
+  async list(uid: number, getFriendDto: GetFriendDto): Promise<CommonReturn<WithCommonPaginationConfig<GetFriendReturnDto[]> | []>> {
+
+    const queryRunner = this.dataSource.createQueryRunner()
+    queryRunner.connect()
+    queryRunner.startTransaction()
+    try {
+      const friendFinout = await this.friendRepository.find({
+        where: { uid },
+        select: ['friendUid', 'addTime', 'nickName'],
+        take: getFriendDto.pageSize || 9999999999,
+        skip: ((getFriendDto.pageNum - 1) * getFriendDto.pageSize) || 0,
       })
-      return await {
-        ...item,
-        username: currentUser.username,
+      const result = await Promise.all(friendFinout.map(async item => {
+        const currentUser = await this.userRepository.findOne({
+          where: { uid: item.friendUid },
+          select: ['username']
+        })
+        return {
+          ...item,
+          username: currentUser.username,
+        }
+      }))
+      if (friendFinout) {
+        return {
+          message: '服务君把您的朋友都叫过来啦~',
+          status: HttpStatus.OK,
+          result: {
+            dataList: result,
+            pageNum: getFriendDto.pageNum,
+            pageSize: getFriendDto.pageSize,
+            total: result.length
+          },
+        }
       }
-    }))
-    if (friendFinout) {
+    } catch (error) {
       return {
-        message: 'success',
-        status: HttpStatus.OK,
-        result: result,
+        message: '服务君找不到您的朋友啦，容服务君先找一找吧',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        result: []
       }
+    } finally {
+      queryRunner.release()
     }
+
   }
 }

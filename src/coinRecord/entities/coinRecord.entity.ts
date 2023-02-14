@@ -1,8 +1,8 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-14 17:16:42
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 18:03:06
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-14 21:39:40
 * @FilePath: /minibbs/src/coin/entities/coin.entity.ts
 * @Description: coin entity
 */
@@ -21,11 +21,11 @@ export class CoinRecord {
     @Column({
         comment: '操作人uid'
     })
-    oUid: number
+    operatorUid: number
     @Column({
-        comment: '别操作账户的uid'
+        comment: '目标账户的uid'
     })
-    uid: number
+    targetUid: number
     @Column({
         comment: '操作后余额'
     })

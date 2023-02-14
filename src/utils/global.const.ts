@@ -6,5 +6,3 @@
  * @FilePath: /minibbs/utils/global.const.ts
  * @Description: 全局变量定义
  */
-
-

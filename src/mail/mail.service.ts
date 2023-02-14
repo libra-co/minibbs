@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:26
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 16:59:42
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-14 21:09:11
  * @FilePath: \minibbs\src\mail\mail.service.ts
  * @Description: mail service
  */
@@ -28,9 +28,12 @@ export class MailService {
   async create(createMailDto: CreateMailDto): Promise<CommonReturn> {
     try {
       return this.dataSource.transaction(async manager => {
-        const newMail = {
-          createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-          ...createMailDto,
+        const newMail = new Mail()
+        for (const field in createMailDto) {
+          if (Object.prototype.hasOwnProperty.call(createMailDto, field)) {
+            newMail[field] = createMailDto[field];
+          }
+          newMail.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
         }
         await manager.save(Mail, newMail)
         return {
