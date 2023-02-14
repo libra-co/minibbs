@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 18:08:32
+ * @LastEditTime: 2023-02-14 18:15:55
  * @FilePath: /minibbs/src/coin/dto/coin.dto.ts
  * @Description: coin DTO
  */
