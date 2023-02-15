@@ -34,7 +34,6 @@ export class CoinRecordService {
    * @returns 
    */
   async transfer(uid: number, transferDto: TransferCoinRecordDto): Promise<CommonReturn> {
-    console.log('2', 2)
     // 操作人
     const operatorUser = await this.userRepository.findOneOrFail({ where: { uid } })
     if (!operatorUser) return { message: '银行暂时对你的身份标识怀疑，请稍候再找服务君哦！', status: HttpStatus.INTERNAL_SERVER_ERROR, result: '' }

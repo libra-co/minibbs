@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-16 00:36:37
+ * @LastEditTime: 2023-02-16 00:48:01
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
