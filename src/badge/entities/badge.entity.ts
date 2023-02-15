@@ -26,6 +26,7 @@ export class Badge {
     pirce: number
 
     @Column({
+        nullable: true,
         comment: '对勋章的描述'
     })
     description: string
