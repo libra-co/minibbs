@@ -8,7 +8,7 @@ import { CreateBadgeDto } from './dto/badge.dto';
 export class BadgeController {
   constructor(private readonly badgeService: BadgeService) { }
 
-  @Post('list')
+  @Post('add')
   create(@Body() createBadgeDto: CreateBadgeDto) {
     return this.badgeService.create(createBadgeDto);
   }
