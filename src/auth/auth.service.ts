@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 14:14:14
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 17:23:56
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-15 10:08:51
  * @FilePath: \minibbs\src\auth\auth.service.ts
  * @Description: 验证service
  */
@@ -28,7 +28,6 @@ export class AuthService {
     // 根据数据类型判断ＱＱ号还是uid登录
     if (typeof username === 'number') {
       user = await this.userRepository.findOne({ where: { uid: username } })
-
     } else {
       const { uid: findOutUid } = await this.userDetailRepository.findOne({ where: { qqNumber: username } }) || {}
       user = await this.userRepository.findOne({ where: { uid: findOutUid } })

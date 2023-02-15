@@ -1,12 +1,22 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-13 09:27:44
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-16 00:48:01
+ * @FilePath: /minibbs/src/user/user.service.ts
+ * @Description: user service
+ */
+
 import * as dayjs from 'dayjs'
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { DataSource, Repository } from 'typeorm';
-import { BasicProfileReturnDto, CreateUserDto, DetailProfileReturnDto } from './dto/user.dto';
+import { BasicProfileReturnDto, CreateUserDto, DetailProfileReturnDto, EditProfileDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
+import { commonCatchErrorReturn } from 'src/utils/utils';
 
 @Injectable()
 export class UserService {
@@ -17,7 +27,7 @@ export class UserService {
     private dataSource: DataSource,
   ) { }
 
-  async create(createUserDto: CreateUserDto): Promise<string | CommonReturn<any>> {
+  async create(createUserDto: CreateUserDto): Promise<string | CommonReturn> {
     // 用户表字段
     const userFields = ['password', 'username', 'age']
     // 用户详情表字段
@@ -30,34 +40,36 @@ export class UserService {
     }
     newUserDetail.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
 
+    const queryRunner = this.dataSource.createQueryRunner()
+    queryRunner.connect()
+    queryRunner.startTransaction()
     try {
       await this.dataSource.transaction(async manager => {
         const userReesult = await manager.save(User, newUser)
         newUserDetail.uid = userReesult.uid
         await manager.save(UserDetail, newUserDetail)
       })
+      await queryRunner.commitTransaction()
       return {
         status: HttpStatus.OK,
         message: '注册成功，记得常来呀！',
         result: ''
       }
     } catch (error) {
-      console.log('error', error)
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: '注册失败，请联系管理员！！',
-        result: ''
-      }
-
+      await queryRunner.rollbackTransaction()
+      return commonCatchErrorReturn
+    } finally {
+      await queryRunner.release()
     }
   }
 
   // 基础个人资料
-  async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | ''>> {
+  async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
+    if (!uid) return commonCatchErrorReturn
     try {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
-        const user = await this.userRepository.findOne({ where: { uid } })
+        const user = await this.userRepository.findOneOrFail({ where: { uid } })
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
           mailNum: 9999999,
@@ -89,17 +101,13 @@ export class UserService {
         }
       })
     } catch (error) {
-      console.log('123', 123)
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: '出错啦，请联系管理员',
-        result: '',
-      }
+      return commonCatchErrorReturn
     }
   }
 
   // 个人资料详情
-  async getDetailProfile(uid: number): Promise<CommonReturn<DetailProfileReturnDto | ''>> {
+  async getDetailProfile(uid: number): Promise<CommonReturn<DetailProfileReturnDto | string>> {
+    if (!uid) return commonCatchErrorReturn
     try {
       return this.dataSource.transaction(async manager => {
         const { result: basicProfile } = await this.basicProfile(uid) as unknown as CommonReturn<BasicProfileReturnDto>
@@ -113,7 +121,7 @@ export class UserService {
           height: detailEntity.height,
           weight: detailEntity.weight,
           constellation: detailEntity.constellation,
-          habit: detailEntity.habit,
+          habbit: detailEntity.habbit,
           isMarry: detailEntity.isMarry,
           vocation: detailEntity.vocation,
         }
@@ -132,6 +140,39 @@ export class UserService {
     }
   }
 
+  // 编辑个人资料
+  async editProfile(uid: number, editProfileDto: EditProfileDto): Promise<CommonReturn> {
+    const targetUer = await this.userRepository.findOneOrFail({ where: { uid } })
+    const targetUserDetail = await this.userDetailRepository.findOneOrFail({ where: { uid } })
+    for (const field in editProfileDto) {
+      if (Object.prototype.hasOwnProperty.call(editProfileDto, field)) {
+        if (field in targetUer) {
+          targetUer[field] = editProfileDto[field];
+        } else if (field in targetUserDetail) {
+          targetUserDetail[field] = editProfileDto[field]
+        }
+      }
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner()
+    queryRunner.connect()
+    queryRunner.startTransaction()
+    try {
+      await queryRunner.manager.save(User, targetUer)
+      await queryRunner.manager.save(UserDetail, targetUserDetail)
+      await queryRunner.commitTransaction()
+      return {
+        message: '服务君偷偷帮你把资料卡改好啦！',
+        status: HttpStatus.OK,
+        result: ''
+      }
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      return commonCatchErrorReturn
+    } finally {
+      await queryRunner.release()
+    }
+  }
 
 
 }

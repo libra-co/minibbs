@@ -29,7 +29,7 @@ export class UserDetail {
     constellation?: string
 
     @Column({ nullable: true })
-    habit?: string
+    habbit?: string
 
     @Column({ nullable: true })
     isMarry?: 0 | 1

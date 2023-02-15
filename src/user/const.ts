@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-11 00:04:44
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 17:30:49
+ * @LastEditTime: 2023-02-15 14:50:17
  * @FilePath: /minibbs/src/user/const.ts
  * @Description: user const
  */
@@ -42,3 +42,27 @@ export enum IentityEnum {
     'smallVip',
     'BipVip',
 }
+
+
+// 星座枚举
+export enum ConstellationEnToCn {
+    'Aries',
+    'Taurus',
+    'Gemini',
+    'Cancer',
+    'Leo',
+    'Virgo',
+    'Libra',
+    'Scorpio',
+    'Sagittarius',
+    'Capricornus',
+    'Aquarius',
+    'Pisces',
+}
+
+// 预留账户UID（特殊账户uid）
+export enum ReservedAccount {
+    'stystem'
+}
+
+

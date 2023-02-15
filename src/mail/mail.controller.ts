@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 16:14:17
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 16:52:14
+ * @LastEditTime: 2023-02-15 11:23:28
  * @FilePath: /minibbs/src/mail/mail.controller.ts
  * @Description: maill controller
  */
@@ -28,7 +28,7 @@ export class MailController {
 
   @Post('deleteAll')
   deleteAll(@Req() req) {
-    return this.mailService.delteAll(req.user.uid)
+    return this.mailService.deleteAll(req.user.uid)
   }
 
   @Post('list')

@@ -1,10 +1,10 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 18:06:44
- * @FilePath: /minibbs/src/coinRecord/coinRecord.module.ts
- * @Description: coinRecord module
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-15 23:28:23
+ * @FilePath: /minibbs/src/coinRecord/CoinRecordModule.module.ts
+ * @Description: CoinRecordModule module
  */
 import { Module } from '@nestjs/common';
 import { CoinRecordService } from './coinRecord.service';
@@ -16,6 +16,7 @@ import { User } from 'src/user/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([CoinRecord, User])],
   controllers: [CoinRecordController],
-  providers: [CoinRecordService]
+  providers: [CoinRecordService],
+  exports: [CoinRecordService]
 })
-export class CoinModule { }
+export class CoinRecordModule { }
