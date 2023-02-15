@@ -13,7 +13,7 @@ export class CreateBadgeDto {
     @IsString()
     name: string
     @IsUrl()
-    pickLink: string
+    picLink: string
     @IsNumber()
     price: number
     @IsString()
