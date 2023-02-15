@@ -16,6 +16,7 @@ import { FriendModule } from './friend/friend.module';
 import { MailModule } from './mail/mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinModule } from './coinRecord/coinRecord.module';
+import { BadgeModule } from './badge/badge.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CoinModule } from './coinRecord/coinRecord.module';
     FriendModule,
     MailModule,
     CoinModule,
+    BadgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
