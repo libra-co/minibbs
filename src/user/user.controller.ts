@@ -17,7 +17,7 @@ export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get('profile')
-  getBasicProfile(@Query('uid') uid: number) {
+  getBasicProfile(@Req()req,@Query('uid') uid: number) {
     return this.userService.basicProfile(uid)
   }
 

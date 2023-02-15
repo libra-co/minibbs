@@ -13,7 +13,7 @@ import { GenderEnum, IentityEnum, RoleEnum } from "../const";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn({
-        comment: '应该从10000开始自增'
+        comment: '应该从10000开始自增，系统id为0'
     })
     uid: number
 

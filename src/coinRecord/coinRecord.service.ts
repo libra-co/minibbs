@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 14:23:40
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-16 00:31:40
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
@@ -29,17 +29,18 @@ export class CoinRecordService {
 
   /**
    * @description 转账
-   * @param uid 操作人的uid --> operation uid
+   * @param uid 操作人的uid --> operation uid, 系统id为0
    * @param transferDto 
    * @returns 
    */
   async transfer(uid: number, transferDto: TransferCoinRecordDto): Promise<CommonReturn> {
+    console.log('2', 2)
     // 操作人
     const operatorUser = await this.userRepository.findOneOrFail({ where: { uid } })
     if (!operatorUser) return { message: '银行暂时对你的身份标识怀疑，请稍候再找服务君哦！', status: HttpStatus.INTERNAL_SERVER_ERROR, result: '' }
     // 收款人
     const targetUser = await this.userRepository.findOneOrFail({ where: { uid: transferDto.targetUid } })
-    if (!targetUser) return { message: '对方账户不在服务君小本本上，请核对号收款人后再找服务君哦！', status: HttpStatus.INTERNAL_SERVER_ERROR, result: '' }
+    if (!targetUser) return { message: '查无此人，请核对号收款人后再找服务君哦！', status: HttpStatus.INTERNAL_SERVER_ERROR, result: '' }
     // 判断转账额度大于账户余额
     if ((operatorUser.coin - transferDto.changeNum) < 0) return { message: '你的存款不够啦，服务君可不自掏腰包哦！', status: HttpStatus.BAD_REQUEST, result: '' }
     const newOperatorUser = { ...operatorUser, coin: operatorUser.coin - transferDto.changeNum }

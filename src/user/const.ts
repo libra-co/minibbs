@@ -59,3 +59,10 @@ export enum ConstellationEnToCn {
     'Aquarius',
     'Pisces',
 }
+
+// 预留账户UID（特殊账户uid）
+export enum ReservedAccount {
+    'stystem'
+}
+
+

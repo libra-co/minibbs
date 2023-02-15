@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { BadgeService } from './badge.service';
-import { CreateBadgeDto } from './dto/badge.dto';
+import { CreateBadgeDto, ListBadgeDto, UpdateBadgeDto } from './dto/badge.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('badge')
@@ -14,8 +14,22 @@ export class BadgeController {
   }
 
   @Post('list')
-  list(@Body() createBadgeDto: CreateBadgeDto) {
+  list(@Body() createBadgeDto: ListBadgeDto) {
     return this.badgeService.list(createBadgeDto);
+  }
+
+  @Post('delete')
+  delete(@Body('bid') bid: string) {
+    return this.badgeService.delete(bid)
+  }
+
+  @Post('update')
+  update(@Body() updateBadgeDto: UpdateBadgeDto) {
+    return this.badgeService.update(updateBadgeDto)
+  }
+  @Post('buy')
+  buy(@Req() req, @Body('bid') bid: string) {
+    return this.badgeService.buy(req.user.uid, bid)
   }
 
 }

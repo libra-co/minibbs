@@ -14,6 +14,7 @@ import { User } from './entities/user.entity';
 import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
 import { FriendService } from 'src/friend/friend.service';
+import { Badge } from 'src/badge/entities/badge.entity';
 
 @Module({
   imports: [

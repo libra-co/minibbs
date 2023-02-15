@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 17:48:12
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-15 22:51:48
  * @FilePath: /minibbs/src/badge/entities/badge.entity.ts
  * @Description: badge entity
  */
@@ -23,7 +23,7 @@ export class Badge {
     picLink: string
 
     @Column()
-    pirce: number
+    price: number
 
     @Column({
         nullable: true,
@@ -35,4 +35,16 @@ export class Badge {
         type: 'datetime'
     })
     createTime: string
+
+    @Column({
+        default: 0,
+        comment:'是否可以购买'
+    })
+    canBuy: 0 | 1
+    
+    @Column({
+        default: 0,
+        comment:'是否可以申请'
+    })
+    canApply: 0 | 1
 }

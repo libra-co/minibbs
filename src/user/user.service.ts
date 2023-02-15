@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 17:16:43
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-16 00:36:37
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -27,7 +27,7 @@ export class UserService {
     private dataSource: DataSource,
   ) { }
 
-  async create(createUserDto: CreateUserDto): Promise<string | CommonReturn<any>> {
+  async create(createUserDto: CreateUserDto): Promise<string | CommonReturn> {
     // 用户表字段
     const userFields = ['password', 'username', 'age']
     // 用户详情表字段
@@ -64,11 +64,12 @@ export class UserService {
   }
 
   // 基础个人资料
-  async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | ''>> {
+  async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
+    if (!uid) return commonCatchErrorReturn
     try {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
-        const user = await this.userRepository.findOne({ where: { uid } })
+        const user = await this.userRepository.findOneOrFail({ where: { uid } })
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
           mailNum: 9999999,
@@ -100,16 +101,13 @@ export class UserService {
         }
       })
     } catch (error) {
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: '出错啦，请联系管理员',
-        result: '',
-      }
+      return commonCatchErrorReturn
     }
   }
 
   // 个人资料详情
-  async getDetailProfile(uid: number): Promise<CommonReturn<DetailProfileReturnDto | ''>> {
+  async getDetailProfile(uid: number): Promise<CommonReturn<DetailProfileReturnDto | string>> {
+    if (!uid) return commonCatchErrorReturn
     try {
       return this.dataSource.transaction(async manager => {
         const { result: basicProfile } = await this.basicProfile(uid) as unknown as CommonReturn<BasicProfileReturnDto>

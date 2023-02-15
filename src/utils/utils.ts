@@ -2,10 +2,8 @@ import { HttpStatus } from "@nestjs/common"
 
 
 // 带有翻页的返回信息
-export interface WithCommonPaginationConfig<T> {
+export interface WithCommonPaginationConfig<T> extends PaginationConfigDto {
     dataList: T
-    pageNum: number
-    pageSize: number
     total: number
 }
 
@@ -14,4 +12,10 @@ export const commonCatchErrorReturn = {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     message: '服务君忙不过来啦，稍后再试一下吧~',
     result: ''
+}
+
+// 分页信息
+export class PaginationConfigDto {
+    pageNum: number
+    pageSize: number
 }
