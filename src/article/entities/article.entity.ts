@@ -77,7 +77,7 @@ export class Article {
         default: 0,
         comment: '是否为精华帖'
     })
-    isBestrAticle: 0 | 1
+    isBestArticle: 0 | 1
 
     @Column({
         default: 0,
