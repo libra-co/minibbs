@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 17:26:55
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 16:14:35
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-18 16:48:05
  * @FilePath: /minibbs/src/app.module.ts
  * @Description: 主程序入口
  */
@@ -17,6 +17,10 @@ import { MailModule } from './mail/mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinRecordModule } from './coinRecord/coinRecord.module';
 import { BadgeModule } from './badge/badge.module';
+import { BookMarkModule } from './bookMark/bookMark.module';
+import { BlockModule } from './block/block.module';
+import { ZoneModule } from './zone/zone.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -27,6 +31,10 @@ import { BadgeModule } from './badge/badge.module';
     MailModule,
     CoinRecordModule,
     BadgeModule,
+    BookMarkModule,
+    BlockModule,
+    ZoneModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

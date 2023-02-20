@@ -2,12 +2,11 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-16 00:48:01
+ * @LastEditTime: 2023-02-20 21:51:11
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
 
-import * as dayjs from 'dayjs'
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonReturn } from 'src/utils/commonInterface';
@@ -38,7 +37,6 @@ export class UserService {
       userFields.includes(key) && (newUser[key] = createUserDto[key])
       userDetailFields.includes(key) && (newUserDetail[key] = createUserDto[key])
     }
-    newUserDetail.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
 
     const queryRunner = this.dataSource.createQueryRunner()
     queryRunner.connect()

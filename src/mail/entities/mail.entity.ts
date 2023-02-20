@@ -7,7 +7,8 @@
  * @Description: mail Entity
  */
 
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import * as dayjs from "dayjs";
+import { Column, Entity,  PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Mail {
@@ -32,6 +33,7 @@ export class Mail {
 
     @Column({
         type: 'datetime',
+        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         comment: '回复创建日期'
     })
     createTime: string

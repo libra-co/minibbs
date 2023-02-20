@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-16 00:31:40
+ * @LastEditTime: 2023-02-20 21:46:32
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
@@ -12,7 +12,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
 import { CoinRecord } from './entities/coinRecord.entity';
-import * as dayjs from 'dayjs'
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { WithCommonPaginationConfig } from 'src/utils/utils';
@@ -52,7 +51,6 @@ export class CoinRecordService {
       }
     }
     newCoinRecord.balance = targetUser.coin - transferDto.changeNum
-    newCoinRecord.operationTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     newCoinRecord.operatorUid = uid
 
     const queryRunner = this.datasource.createQueryRunner()

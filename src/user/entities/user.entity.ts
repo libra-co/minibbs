@@ -2,11 +2,12 @@
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 16:56:30
+ * @LastEditTime: 2023-02-20 21:50:00
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
-import { IsNotEmpty, IsNumber, MinLength, MaxLength, IsString, IsPhoneNumber } from "class-validator";
+
+import { IsNumber, MinLength, MaxLength, IsString, IsPhoneNumber } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { GenderEnum, IentityEnum, RoleEnum } from "../const";
 

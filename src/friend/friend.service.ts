@@ -1,14 +1,13 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 10:44:43
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-20 21:47:30
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as dayjs from 'dayjs';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
@@ -49,7 +48,6 @@ export class FriendService {
       }
     }
     const newFriend = new Friend()
-    newFriend.addTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     newFriend.uid = uid
     newFriend.friendUid = friendUid
 
