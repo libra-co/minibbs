@@ -6,12 +6,12 @@
  * @FilePath: \minibbs\src\mail\mail.service.ts
  * @Description: mail service
  */
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateMailDto, ListMailDto, ListMailReturnDto } from './dto/mail.dto';
 import { Mail } from './entities/mail.entity';
-import * as dayjs from 'dayjs'
 import { CommonReturn } from 'src/utils/commonInterface';
 import { HttpStatus } from '@nestjs/common/enums';
 import { User } from 'src/user/entities/user.entity';
@@ -36,7 +36,6 @@ export class MailService {
           if (Object.prototype.hasOwnProperty.call(createMailDto, field)) {
             newMail[field] = createMailDto[field];
           }
-          newMail.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
         }
         await manager.save(Mail, newMail)
         return {

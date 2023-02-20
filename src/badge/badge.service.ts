@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-16 00:31:29
+ * @LastEditTime: 2023-02-20 21:44:23
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -12,7 +12,6 @@ import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/ut
 import { DataSource, Repository } from 'typeorm';
 import { CreateBadgeDto, ListBadgeDto, ListBadgeReturnDto, UpdateBadgeDto } from './dto/badge.dto';
 import { Badge } from './entities/badge.entity';
-import * as dayjs from 'dayjs'
 import { CommonReturn } from 'src/utils/commonInterface';
 import { User } from 'src/user/entities/user.entity';
 import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
@@ -37,7 +36,6 @@ export class BadgeService {
       if (Object.prototype.hasOwnProperty.call(createBadgeDto, field)) {
         newBadge[field] = createBadgeDto[field];
       }
-      newBadge.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     }
     await this.badgeRepository.save(newBadge)
     return {

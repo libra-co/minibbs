@@ -7,6 +7,7 @@
 * @Description: coin entity
 */
 
+import * as dayjs from "dayjs";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { OperationType } from "../cosnt";
 
@@ -36,6 +37,7 @@ export class CoinRecord {
     operationType: OperationType
     @Column({
         type: 'datetime',
+        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         comment: '操作日期'
     })
     operationTime: string

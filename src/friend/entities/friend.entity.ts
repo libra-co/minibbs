@@ -2,10 +2,12 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 17:54:15
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 18:02:33
+ * @LastEditTime: 2023-02-20 21:47:10
  * @FilePath: \minibbs\src\user\entities\friends.entity.ts
  * @Description: 好友表
  */
+
+import * as dayjs from "dayjs";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
@@ -28,6 +30,7 @@ export class Friend {
 
     @Column({
         type: 'datetime',
+        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         comment: '添加好友时间'
     })
     addTime: string

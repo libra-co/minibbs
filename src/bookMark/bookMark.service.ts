@@ -1,11 +1,18 @@
+/*
+ * @Author: liuhongbo 916196375@qq.com
+ * @Date: 2023-02-18 11:24:26
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-20 21:44:43
+ * @FilePath: \minibbs\src\bookMark\bookMark.service.ts
+ * @Description: bookMark service
+ */
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AddBookMarkDto, DeleteBookMarkDto, ListBookMarkDtoReturn, ListBookMarkDto } from './dto/bookMark.dto';
 import { BookMark } from './entities/bookMark.entity';
-import * as dayjs from 'dayjs'
 import { CommonReturn } from 'src/utils/commonInterface';
-import { commonCatchErrorReturn, PaginationConfigDto, WithCommonPaginationConfig } from 'src/utils/utils';
+import { commonCatchErrorReturn,  WithCommonPaginationConfig } from 'src/utils/utils';
 
 
 @Injectable()
@@ -23,7 +30,6 @@ export class BookMarkService {
       }
     }
     newBookMarkRecord.uid = uid
-    newBookMarkRecord.bookMarkTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const saveResult = await this.bookMarkRepository.save(newBookMarkRecord)
     if (saveResult) {
       return {

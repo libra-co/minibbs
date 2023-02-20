@@ -1,3 +1,4 @@
+import * as dayjs from "dayjs";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -17,6 +18,7 @@ export class BookMark {
 
     @Column({
         type: 'datetime',
+        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         comment: '收藏时间'
     })
     bookMarkTime: string
