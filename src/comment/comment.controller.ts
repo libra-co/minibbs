@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 17:27:25
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-02-21 21:28:42
  * @FilePath: /minibbs/src/comment/comment.controller.ts
  * @Description: comment controller
  */
@@ -24,6 +24,11 @@ export class CommentController {
   @Post('list')
   list(@Req() req, @Body() addCommentDto: ListCommentDto) {
     return this.commentService.list(addCommentDto)
+  }
+
+  @Post('delete')
+  delete(@Body('cid') cid: string) {
+    return this.commentService.delete(cid)
   }
 
 }
