@@ -94,4 +94,13 @@ export class CommentService {
     }
   }
 
+  async delete(cid: string): Promise<CommonReturn> {
+    const deleteComment = await this.commentRepository.findOneOrFail({ where: { cid } })
+    await this.commentRepository.remove(deleteComment)
+    return {
+      message: '服务君悄悄帮你涂掉啦！',
+      status: HttpStatus.OK,
+      result: ''
+    }
+  }
 }
