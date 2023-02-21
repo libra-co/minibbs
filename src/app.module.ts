@@ -21,6 +21,7 @@ import { BookMarkModule } from './bookMark/bookMark.module';
 import { BlockModule } from './block/block.module';
 import { ZoneModule } from './zone/zone.module';
 import { ArticleModule } from './article/article.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ArticleModule } from './article/article.module';
     BlockModule,
     ZoneModule,
     ArticleModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

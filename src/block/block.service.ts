@@ -1,26 +1,74 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBlockDto } from './dto/create-block.dto';
-import { UpdateBlockDto } from './dto/update-block.dto';
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-21 11:13:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-21 15:09:03
+ * @FilePath: /minibbs/src/block/block.service.ts
+ * @Description: block service
+ */
+import { Body, HttpStatus, Injectable, Post } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CommonReturn } from 'src/utils/commonInterface';
+import { Repository } from 'typeorm';
+import { AddBlockDto, EditBlockDto, ListBlockDto, ListBlockReturnDto } from './dto/block.dto';
+import { Block } from './entities/block.entity';
 
 @Injectable()
 export class BlockService {
-  create(createBlockDto: CreateBlockDto) {
-    return 'This action adds a new block';
+  constructor(
+    @InjectRepository(Block)
+    private readonly blockRepository: Repository<Block>,
+  ) { }
+
+
+  async add(addBlockDto: AddBlockDto): Promise<CommonReturn> {
+    const newBlock = new Block()
+    for (const field in addBlockDto) {
+      if (Object.prototype.hasOwnProperty.call(addBlockDto, field)) {
+        newBlock[field] = addBlockDto[field];
+      }
+    }
+    this.blockRepository.save(newBlock)
+    return {
+      message: '服务君帮记在小本本上啦！',
+      status: HttpStatus.OK,
+      result: '',
+    }
   }
 
-  findAll() {
-    return `This action returns all block`;
+  async list(listBlockDto: ListBlockDto): Promise<CommonReturn<ListBlockReturnDto[]>> {
+    let blockList: ListBlockReturnDto[]
+    if (Object.keys(listBlockDto).length === 0) {
+      blockList = await this.blockRepository.find()
+    } else {
+      blockList = await this.blockRepository.find({ where: { ...listBlockDto } })
+    }
+    return {
+      message: '大人，这是服务君在小本本上的记录！',
+      status: HttpStatus.OK,
+      result: blockList
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} block`;
+  async delete(blid: string): Promise<CommonReturn> {
+    const deleteBlock = await this.blockRepository.findOneOrFail({ where: { blid } })
+    await this.blockRepository.remove(deleteBlock)
+    return {
+      message: '服务君在小本本上划掉啦！',
+      status: HttpStatus.OK,
+      result: ''
+    }
   }
 
-  update(id: number, updateBlockDto: UpdateBlockDto) {
-    return `This action updates a #${id} block`;
+  async edit(editBlockDto: EditBlockDto): Promise<CommonReturn> {
+    const { blid, ...rest } = editBlockDto
+    const editBlock = await this.blockRepository.findOneOrFail({ where: { blid } })
+    await this.blockRepository.save({ ...editBlock, ...rest })
+    return {
+      message: '服务君把改动记录好啦！',
+      status: HttpStatus.OK,
+      result: ''
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} block`;
-  }
 }
