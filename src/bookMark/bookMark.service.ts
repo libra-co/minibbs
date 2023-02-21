@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 11:24:26
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:44:43
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-21 15:32:27
  * @FilePath: \minibbs\src\bookMark\bookMark.service.ts
  * @Description: bookMark service
  */
@@ -12,7 +12,8 @@ import { Repository } from 'typeorm';
 import { AddBookMarkDto, DeleteBookMarkDto, ListBookMarkDtoReturn, ListBookMarkDto } from './dto/bookMark.dto';
 import { BookMark } from './entities/bookMark.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
-import { commonCatchErrorReturn,  WithCommonPaginationConfig } from 'src/utils/utils';
+import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
+import { Article } from 'src/article/entities/article.entity';
 
 
 @Injectable()
@@ -20,6 +21,8 @@ export class BookMarkService {
   constructor(
     @InjectRepository(BookMark)
     private readonly bookMarkRepository: Repository<BookMark>,
+    @InjectRepository(Article)
+    private readonly articleRepository: Repository<Article>,
   ) { }
 
   async add(uid: number, addBookMarkDto: AddBookMarkDto): Promise<CommonReturn> {
@@ -63,9 +66,13 @@ export class BookMarkService {
       skip: (pageNum - 1) * pageSize
     })
     // 文章列表标题
-    // const resultList = await Promise.all(bookMarkList.map(async bookMarkListItem => {
-      
-    // } ))
+    const resultList = await Promise.all(bookMarkList.map(async bookMarkListItem => {
+      const currentArticle = await this.articleRepository.findOneOrFail({
+        where: { aid: bookMarkListItem.aid },
+        select: ['title']
+      })
+      return { ...bookMarkList, title: currentArticle.title }
+    }))
     return {
       message: '这是大人的收藏簿，请大人过目！',
       status: HttpStatus.OK,

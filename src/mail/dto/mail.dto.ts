@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:27
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-14 00:06:19
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-21 17:17:05
  * @FilePath: \minibbs\src\mail\dto\mail.dto.ts
  * @Description: mailDTO
  */
@@ -12,10 +12,10 @@ import { Mail } from "../entities/mail.entity";
 
 export class CreateMailDto {
     @IsString()
-    postUid: string
+    postUid: number
 
     @IsString()
-    reciveUid: string
+    reciveUid: number
 
     @IsString()
     title: string

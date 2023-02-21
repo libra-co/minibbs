@@ -1,34 +1,37 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-21 11:13:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-02-21 15:11:06
+ * @FilePath: /minibbs/src/block/block.controller.ts
+ * @Description: block controller
+ */
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BlockService } from './block.service';
-import { CreateBlockDto } from './dto/create-block.dto';
-import { UpdateBlockDto } from './dto/update-block.dto';
+import { AddBlockDto, EditBlockDto, ListBlockDto } from './dto/block.dto';
 
 @Controller('block')
 export class BlockController {
-  constructor(private readonly blockService: BlockService) {}
+  constructor(private readonly blockService: BlockService) { }
 
-  @Post()
-  create(@Body() createBlockDto: CreateBlockDto) {
-    return this.blockService.create(createBlockDto);
+  @Post('add')
+  add(@Body() addBlockDto: AddBlockDto) {
+    return this.blockService.add(addBlockDto)
   }
 
-  @Get()
-  findAll() {
-    return this.blockService.findAll();
+  @Post('list')
+  list(@Body() listBlockDto: ListBlockDto) {
+    return this.blockService.list(listBlockDto)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blockService.findOne(+id);
+  @Post('delete')
+  delete(@Body('blid') blid: string) {
+    return this.blockService.delete(blid)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlockDto: UpdateBlockDto) {
-    return this.blockService.update(+id, updateBlockDto);
+  @Post('edit')
+  edit(@Body() editBlockDto: EditBlockDto) {
+    return this.blockService.edit(editBlockDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blockService.remove(+id);
-  }
 }

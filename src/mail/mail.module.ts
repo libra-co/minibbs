@@ -16,6 +16,7 @@ import { User } from 'src/user/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Mail, User])],
   controllers: [MailController],
-  providers: [MailService]
+  providers: [MailService],
+  exports: [MailService]
 })
 export class MailModule { }
