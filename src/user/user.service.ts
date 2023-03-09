@@ -64,6 +64,7 @@ export class UserService {
   // 基础个人资料
   async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
     if (!uid) return commonCatchErrorReturn
+    console.log('uid', uid)
     try {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
@@ -99,6 +100,7 @@ export class UserService {
         }
       })
     } catch (error) {
+      console.log('error', error)
       return commonCatchErrorReturn
     }
   }
