@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 23:20:13
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 19:02:43
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-17 14:50:48
  * @FilePath: /minibbs/src/user/user.module.ts
  * @Description: user module
  */
@@ -15,13 +15,15 @@ import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
 import { FriendService } from 'src/friend/friend.service';
 import { Badge } from 'src/badge/entities/badge.entity';
+import { Mail } from 'src/mail/entities/mail.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserDetail, Friend])
+    TypeOrmModule.forFeature([User, UserDetail, Friend, Mail])
   ],
   controllers: [UserController],
-  providers: [UserService, FriendService],
+  providers: [UserService, FriendService, MailService],
   exports: [UserService]
 })
 export class UserModule { }

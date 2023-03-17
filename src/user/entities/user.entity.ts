@@ -1,8 +1,8 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:50:00
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-17 15:50:02
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
@@ -14,7 +14,7 @@ import { GenderEnum, IentityEnum, RoleEnum } from "../const";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn({
-        comment: '应该从10000开始自增，系统id为0'
+        comment: '应该从10000开始自增，系统id为0',
     })
     uid: number
 

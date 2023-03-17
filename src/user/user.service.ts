@@ -16,6 +16,7 @@ import { User } from './entities/user.entity';
 import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
 import { commonCatchErrorReturn } from 'src/utils/utils';
+import { Mail } from 'src/mail/entities/mail.entity';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetail) private readonly userDetailRepository: Repository<UserDetail>,
     @InjectRepository(Friend) private readonly friendRepository: Repository<Friend>,
+    @InjectRepository(Mail) private readonly mailRepository: Repository<Mail>,
     private dataSource: DataSource,
   ) { }
 

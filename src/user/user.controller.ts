@@ -18,9 +18,7 @@ export class UserController {
 
   @Get('profile')
   getBasicProfile(@Req() req, @Query('uid') uid: number) {
-    console.log('ui123d', uid)
-    const d1d123 = uid
-    return this.userService.basicProfile(uid)
+    return this.userService.basicProfile(uid || req.user.uid)
   }
 
   @Get('detailProfile')
@@ -32,6 +30,5 @@ export class UserController {
   editProfile(@Req() req, @Body() editProfileDto: EditProfileDto) {
     return this.userService.editProfile(req.user.uid, editProfileDto)
   }
-
 
 }
