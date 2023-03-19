@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 19:24:49
+ * @LastEditTime: 2023-03-19 21:50:29
  * @FilePath: \minibbs\src\friend\friend.module.ts
  * @Description: Friends 模块
  */
@@ -16,10 +16,11 @@ import { User } from 'src/user/entities/user.entity';
 import { UserDetail } from 'src/user/entities/userDetail.entity';
 import { Mail } from 'src/mail/entities/mail.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { Article } from 'src/article/entities/article.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Friend, User, UserDetail, Mail, Comment])
+    TypeOrmModule.forFeature([Friend, User, UserDetail, Mail, Comment, Article])
   ],
   controllers: [FriendController],
   providers: [FriendService, UserService]

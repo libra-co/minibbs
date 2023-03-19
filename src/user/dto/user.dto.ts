@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 15:33:21
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-19 21:28:11
  * @FilePath: \minibbs\src\user\dto\user.dto.ts
  * @Description: userDto
  */
@@ -40,13 +40,14 @@ export class CreateUserDto {
 }
 
 // 需要从User表中提取的
-type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'reviews'
+type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'reviews' | 'gender'
 
 // 基本资料返回dto
 export interface BasicProfileReturnDto extends Pick<User, PickUserFieldsInBasicProfileReturnDeto> {
     friendsNum: number
     mailNum: number
     replyNum: number
+    articleNum: number
     badge: string[]
 }
 
@@ -65,13 +66,13 @@ export class EditProfileDto {
     @MinLength(6, { message: '密码不能少于6位' })
     @MaxLength(12, { message: '密码不能多于12位' })
     password?: string
-    
+
     @IsOptional()
     @IsString()
     @MinLength(6, { message: '用户名不能少于6位' })
     @MaxLength(12, { message: '用户名不能多于12位' })
     username?: string
-    
+
     @IsOptional()
     @IsString()
     signatrue?: string

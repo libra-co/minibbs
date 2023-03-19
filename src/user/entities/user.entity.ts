@@ -2,7 +2,7 @@
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 13:28:16
+ * @LastEditTime: 2023-03-19 21:56:36
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
@@ -90,7 +90,7 @@ export class User {
     @Column({
         default: GenderEnum.unknown
     })
-    gernder: GenderEnum
+    gender: GenderEnum
 
     @Column({
         default: '',
