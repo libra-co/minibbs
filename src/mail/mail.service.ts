@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:26
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 11:26:17
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-19 13:48:32
  * @FilePath: \minibbs\src\mail\mail.service.ts
  * @Description: mail service
  */
@@ -74,7 +74,7 @@ export class MailService {
     }
   }
 
-  async deleteAll(uid: string): Promise<CommonReturn> {
+  async deleteAll(uid: number): Promise<CommonReturn> {
     const mailList = await this.mailRepository.find({ where: { reciveUid: uid, isDelete: 0 } })
     const deletedMailList = mailList.map(item => {
       item.isDelete = 1

@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:51:11
+ * @LastEditTime: 2023-03-19 21:56:21
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -16,6 +16,9 @@ import { User } from './entities/user.entity';
 import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
 import { commonCatchErrorReturn } from 'src/utils/utils';
+import { Mail } from 'src/mail/entities/mail.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { Article } from 'src/article/entities/article.entity';
 
 @Injectable()
 export class UserService {
@@ -23,6 +26,9 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetail) private readonly userDetailRepository: Repository<UserDetail>,
     @InjectRepository(Friend) private readonly friendRepository: Repository<Friend>,
+    @InjectRepository(Mail) private readonly mailRepository: Repository<Mail>,
+    @InjectRepository(Comment) private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
     private dataSource: DataSource,
   ) { }
 
@@ -64,14 +70,18 @@ export class UserService {
   // 基础个人资料
   async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
     if (!uid) return commonCatchErrorReturn
+    console.log('uid', uid)
     try {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
         const user = await this.userRepository.findOneOrFail({ where: { uid } })
+        const mailNum = await this.mailRepository.count({ where: { reciveUid: uid } })
+        const articleNum = await this.articleRepository.count({ where: { uid } })
+        const replyNum = await this.commentRepository.count({ where: { uid } })
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
-          mailNum: 9999999,
-          replyNum: 99999999,
+          mailNum: mailNum,
+          replyNum: replyNum,
           username: user.username,
           coin: user.coin,
           age: user.age,
@@ -82,6 +92,8 @@ export class UserService {
           role: user.role,
           reviews: user.reviews,
           expireTime: user.expireTime,
+          gender: user.gender,
+          articleNum: articleNum,
           badge: user.badge ? user.badge.split(',') : []
         }
         if (user) {
@@ -99,6 +111,7 @@ export class UserService {
         }
       })
     } catch (error) {
+      console.log('error', error)
       return commonCatchErrorReturn
     }
   }

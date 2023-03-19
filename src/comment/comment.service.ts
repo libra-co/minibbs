@@ -1,3 +1,11 @@
+/*
+ * @Author: liuhongbo 916196375@qq.com
+ * @Date: 2023-03-07 21:09:26
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-19 14:34:11
+ * @FilePath: \MINIBBS_NEST\src\comment\comment.service.ts
+ * @Description: comment service
+ */
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/article/entities/article.entity';
@@ -6,7 +14,7 @@ import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { PaginationConfigDto, WithCommonPaginationConfig } from 'src/utils/utils';
 import { DataSource, Repository } from 'typeorm';
-import { AddCommentDto, ListCommentDto, ListCommentReturnDto } from './dto/comment.dto';
+import { AddCommentDto, ListCommentDto, ListCommentReturnDto, ReadCommentDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()
@@ -103,4 +111,57 @@ export class CommentService {
       result: ''
     }
   }
+
+  async readComment(uid: number, { cid }: ReadCommentDto): Promise<CommonReturn> {
+    const readTarget = await this.commentRepository.findOneOrFail({ where: { cid } })
+    readTarget.isRead = 1
+    const querryRunner = this.dataSource.createQueryRunner()
+    querryRunner.connect()
+    querryRunner.startTransaction()
+    try {
+      await querryRunner.manager.save(Comment, readTarget)
+      await querryRunner.commitTransaction()
+    } catch (error) {
+      await querryRunner.rollbackTransaction()
+      return {
+        message: '服务君的笔没水了诶,已读标记失败！',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        result: ''
+      }
+    } finally {
+      await querryRunner.release()
+    }
+    return {
+      message: '回复已经标记为查看过啦!!',
+      status: HttpStatus.OK,
+      result: ''
+    }
+  }
+
+  async readAllComment(uid: number): Promise<CommonReturn> {
+    const readTargets = await this.commentRepository.find({ where: { ruid: uid, isRead: 0 } })
+    readTargets.forEach(item => { item.isRead = 1 })
+    const querryRunner = this.dataSource.createQueryRunner()
+    querryRunner.connect()
+    querryRunner.startTransaction()
+    try {
+      await querryRunner.manager.save(Comment, readTargets)
+      await querryRunner.commitTransaction()
+    } catch (error) {
+      await querryRunner.rollbackTransaction()
+      return {
+        message: '服务君的笔没水了诶,已读标记失败！',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        result: ''
+      }
+    } finally {
+      await querryRunner.release()
+    }
+    return {
+      message: '回复已经标记为查看过啦!!',
+      status: HttpStatus.OK,
+      result: ''
+    }
+  }
+
 }

@@ -2,19 +2,19 @@
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:50:00
+ * @LastEditTime: 2023-03-19 21:56:36
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
 
 import { IsNumber, MinLength, MaxLength, IsString, IsPhoneNumber } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { GenderEnum, IentityEnum, RoleEnum } from "../const";
+import { GenderEnum, IdentityEnum, RoleEnum } from "../const";
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn({
-        comment: '应该从10000开始自增，系统id为0'
+        comment: '应该从10000开始自增，系统id为0',
     })
     uid: number
 
@@ -59,7 +59,7 @@ export class User {
         default: 1,
         comment: '会员身份 default 1 - 普通会员'
     })
-    identity: IentityEnum
+    identity: IdentityEnum
 
     @Column({
         default: null,
@@ -90,7 +90,7 @@ export class User {
     @Column({
         default: GenderEnum.unknown
     })
-    gernder: GenderEnum
+    gender: GenderEnum
 
     @Column({
         default: '',
