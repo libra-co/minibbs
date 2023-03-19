@@ -8,7 +8,7 @@
  */
 
 import * as dayjs from "dayjs";
-import { Column, Entity,  PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Mail {
@@ -18,12 +18,12 @@ export class Mail {
     @Column({
         comment: '发件人uid,可以为用户uid,系统uid,自己uid'
     })
-    postUid: string
+    postUid: number
 
     @Column({
         comment: '收件人uid'
     })
-    reciveUid: string
+    reciveUid: number
 
     @Column({
         nullable: true,

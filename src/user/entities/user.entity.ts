@@ -1,15 +1,15 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-17 15:50:02
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-19 13:28:16
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */
 
 import { IsNumber, MinLength, MaxLength, IsString, IsPhoneNumber } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { GenderEnum, IentityEnum, RoleEnum } from "../const";
+import { GenderEnum, IdentityEnum, RoleEnum } from "../const";
 
 @Entity()
 export class User {
@@ -59,7 +59,7 @@ export class User {
         default: 1,
         comment: '会员身份 default 1 - 普通会员'
     })
-    identity: IentityEnum
+    identity: IdentityEnum
 
     @Column({
         default: null,

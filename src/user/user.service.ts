@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:51:11
+ * @LastEditTime: 2023-03-19 14:37:30
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -17,6 +17,7 @@ import { UserDetail } from './entities/userDetail.entity';
 import { Friend } from '../friend/entities/friend.entity';
 import { commonCatchErrorReturn } from 'src/utils/utils';
 import { Mail } from 'src/mail/entities/mail.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,7 @@ export class UserService {
     @InjectRepository(UserDetail) private readonly userDetailRepository: Repository<UserDetail>,
     @InjectRepository(Friend) private readonly friendRepository: Repository<Friend>,
     @InjectRepository(Mail) private readonly mailRepository: Repository<Mail>,
+    @InjectRepository(Comment) private readonly commentRepository: Repository<Comment>,
     private dataSource: DataSource,
   ) { }
 
@@ -71,10 +73,12 @@ export class UserService {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
         const user = await this.userRepository.findOneOrFail({ where: { uid } })
+        const mailNum = await this.mailRepository.count({ where: { reciveUid: uid } })
+        const replyNum = await this.commentRepository.count({ where: { uid } })
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
-          mailNum: 9999999,
-          replyNum: 99999999,
+          mailNum: mailNum,
+          replyNum: replyNum,
           username: user.username,
           coin: user.coin,
           age: user.age,

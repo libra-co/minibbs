@@ -15,10 +15,11 @@ import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { UserDetail } from 'src/user/entities/userDetail.entity';
 import { Mail } from 'src/mail/entities/mail.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Friend, User, UserDetail,Mail])
+    TypeOrmModule.forFeature([Friend, User, UserDetail, Mail, Comment])
   ],
   controllers: [FriendController],
   providers: [FriendService, UserService]

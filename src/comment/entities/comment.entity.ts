@@ -16,7 +16,7 @@ export class Comment {
     cid: string
 
     @Column({
-        comment: '发出评论的uid'
+        comment: '发出评论的aid'
     })
     aid: string
 
@@ -44,6 +44,12 @@ export class Comment {
         comment: '被回复评论的评论人uid'
     })
     ruid: number
+
+    @Column({
+        default: 0,
+        comment: '是否已读,已读1,未读0'
+    })
+    isRead: 0 | 1
 
     @Column({
         default: 0

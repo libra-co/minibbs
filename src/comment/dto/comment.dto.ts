@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 18:06:45
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-19 14:10:32
  * @FilePath: /minibbs/src/comment/dto/comment.dto.ts
  * @Description: comment dto
  */
@@ -55,3 +55,7 @@ export interface ListCommentReturnDto {
     replyUsername: string
 }
 
+export class ReadCommentDto {
+    @IsString()
+    cid: string
+}
