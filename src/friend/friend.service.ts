@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:47:30
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 17:42:14
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
@@ -107,6 +107,7 @@ export class FriendService {
         username: currentUser.username,
       }
     }))
+    const total = await this.friendRepository.count({ where: { uid } })
     if (friendFinout) {
       return {
         message: '服务君把您的朋友都叫过来啦~',
@@ -115,7 +116,7 @@ export class FriendService {
           dataList: result,
           pageNum: getFriendDto.pageNum,
           pageSize: getFriendDto.pageSize,
-          total: result.length
+          total
         },
       }
     }

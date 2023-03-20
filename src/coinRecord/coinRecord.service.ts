@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:46:32
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 17:52:47
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
@@ -94,6 +94,7 @@ export class CoinRecordService {
       const operatorUsername = await this.userRepository.findOneOrFail({ where: { uid: item.operatorUid }, select: ['username'] })
       return { ...item, operatorUsername: operatorUsername.username }
     }))
+    const total = await this.coinRecordRepository.count({ where: [{ targetUid: queryUid || uid, ...queryParmms }, { operatorUid: queryUid || uid, ...queryParmms }] })
     return {
       message: '大人，这是您的账本！',
       status: HttpStatus.OK,
@@ -101,7 +102,7 @@ export class CoinRecordService {
         dataList: resultList,
         pageNum: pageNum,
         pageSize: pageSize,
-        total: resultList.length
+        total: total
       }
     }
   }

@@ -1,12 +1,12 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:51:39
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 13:46:01
  * @FilePath: \minibbs\src\user\entities\userDetail.entity.ts
  * @Description: userDetail表
  */
-import { IsEmail,  IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
 import * as dayjs from "dayjs";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
@@ -40,6 +40,12 @@ export class UserDetail {
         comment: '职业'
     })
     vocation?: string
+
+    @Column({
+        nullable: true,
+        comment: '城市'
+    })
+    city?: string
 
     @Column({
         type: 'datetime',

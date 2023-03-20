@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 11:24:26
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 15:32:27
+ * @LastEditTime: 2023-03-20 17:48:00
  * @FilePath: \minibbs\src\bookMark\bookMark.service.ts
  * @Description: bookMark service
  */
@@ -73,6 +73,7 @@ export class BookMarkService {
       })
       return { ...bookMarkList, title: currentArticle.title }
     }))
+    const total = await this.bookMarkRepository.count({ where: { uid } })
     return {
       message: '这是大人的收藏簿，请大人过目！',
       status: HttpStatus.OK,
@@ -80,7 +81,7 @@ export class BookMarkService {
         dataList: bookMarkList,
         pageNum,
         pageSize,
-        total: bookMarkList.length
+        total
       }
     }
   }

@@ -1,3 +1,11 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-21 11:13:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 15:49:41
+ * @FilePath: /minibbs/src/article/dto/article.dto.ts
+ * @Description: article dto
+ */
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { PaginationConfigDto } from "src/utils/utils";
 
@@ -47,4 +55,17 @@ export interface BlockArticleListArticleReturnDto {
     updateTime: string
     viewNum: number
     // replyNum: number
+}
+
+export class UserArticleListDto extends PaginationConfigDto {
+    @IsNumber()
+    uid: number
+}
+
+export interface UserArticleReturnDto {
+    aid: string
+    title: string
+    viewNum: number
+    userName: string
+    replyNum: number
 }

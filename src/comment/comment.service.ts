@@ -90,6 +90,7 @@ export class CommentService {
         replyUsername: replyUser.username,
       }
     }))
+    const total = await this.commentRepository.count({ where: { aid: rest.aid } })
     return {
       message: '小伙伴的评论查到啦！',
       status: HttpStatus.OK,
@@ -97,7 +98,7 @@ export class CommentService {
         dataList,
         pageNum,
         pageSize,
-        total: dataList.length
+        total
       }
     }
   }

@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:44:23
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 17:46:07
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -53,14 +53,17 @@ export class BadgeService {
       take: pageSize,
       skip: (pageNum - 1) * pageSize
     })
-    return {
-      message: '服务君把勋章摆到勋章墙上啦',
-      status: HttpStatus.OK,
-      result: {
-        total: badgeList.length,
-        pageNum: pageNum,
-        pageSize: pageSize,
-        dataList: badgeList,
+    if (badgeList) {
+      const total = await this.badgeRepository.count({ where: { ...queryPrams } })
+      return {
+        message: '服务君把勋章摆到勋章墙上啦',
+        status: HttpStatus.OK,
+        result: {
+          total: total,
+          pageNum: pageNum,
+          pageSize: pageSize,
+          dataList: badgeList,
+        }
       }
     }
   }
@@ -103,7 +106,7 @@ export class BadgeService {
     const newCurrentUser: User = { ...currentUser, badge: newUserBadgeInfo }
     const queryRunner = this.dataSource.createQueryRunner()
     console.log('567', 567)
-    
+
     queryRunner.connect()
     queryRunner.startTransaction()
     try {

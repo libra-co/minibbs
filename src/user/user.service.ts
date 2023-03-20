@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 21:56:21
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-20 15:13:42
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -70,7 +70,6 @@ export class UserService {
   // 基础个人资料
   async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
     if (!uid) return commonCatchErrorReturn
-    console.log('uid', uid)
     try {
       return this.dataSource.transaction(async entityManager => {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
