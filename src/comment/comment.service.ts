@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-03-07 21:09:26
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 14:34:11
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-22 15:49:27
  * @FilePath: \MINIBBS_NEST\src\comment\comment.service.ts
  * @Description: comment service
  */
@@ -12,9 +12,9 @@ import { Article } from 'src/article/entities/article.entity';
 import { MailService } from 'src/mail/mail.service';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
-import { PaginationConfigDto, WithCommonPaginationConfig } from 'src/utils/utils';
+import { WithCommonPaginationConfig } from 'src/utils/utils';
 import { DataSource, Repository } from 'typeorm';
-import { AddCommentDto, ListCommentDto, ListCommentReturnDto, ReadCommentDto } from './dto/comment.dto';
+import { AddCommentDto, ListCommentDto, ListCommentReturnDto, ReadCommentDto, UserCommentDto, UserCommentReturnDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()
@@ -162,6 +162,35 @@ export class CommentService {
       message: '回复已经标记为查看过啦!!',
       status: HttpStatus.OK,
       result: ''
+    }
+  }
+
+  async userCommentList(userCommentDto: UserCommentDto): Promise<CommonReturn<WithCommonPaginationConfig<UserCommentReturnDto[]>>> {
+    const { pageNum, pageSize, ...rest } = userCommentDto
+    const commentList = await this.commentRepository.find({
+      where: { uid: rest.uid },
+      select: ['uid', 'commentTime', 'aid', 'cid', 'content'],
+      order: { commentTime: 'desc' },
+      take: pageSize,
+      skip: (pageNum - 1) * pageSize,
+    })
+    const dataList = await Promise.all(commentList.map(async comment => {
+      const currentUser = await this.userRepository.findOneOrFail({ where: { uid: comment.uid }, select: ['username'] })
+      return {
+        ...comment,
+        userName: currentUser.username
+      }
+    }))
+    const total = await this.commentRepository.count({ where: { uid: rest.uid } })
+    return {
+      message: '小伙伴的评论查到啦！',
+      status: HttpStatus.OK,
+      result: {
+        dataList: dataList,
+        pageNum,
+        pageSize,
+        total
+      }
     }
   }
 

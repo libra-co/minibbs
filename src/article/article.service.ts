@@ -2,19 +2,20 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 17:44:06
+ * @LastEditTime: 2023-03-24 17:30:34
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
 import { Body, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlockArticleListArticleDto, BlockArticleListArticleReturnDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, PostArticleDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
+import { ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { UserDetail } from 'src/user/entities/userDetail.entity';
 
 @Injectable()
 export class ArticleService {
@@ -25,6 +26,8 @@ export class ArticleService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(UserDetail)
+    private readonly userDetailRepository: Repository<UserDetail>,
   ) { }
 
 
@@ -151,6 +154,65 @@ export class ArticleService {
       return commonCatchErrorReturn
     }
 
+  }
+
+  // viewNum + 1
+  // 返回帖子内容
+  async articleDetail({ aid }: ArticleDetailDto): Promise<CommonReturn<Article>> {
+    this.addArticleVieNum(aid)
+    const currentArticle = await this.articleRepository.findOneOrFail({
+      where: { aid },
+      select: ['aid', 'uid', 'title', 'content', 'createTime', 'updateTime', 'likeNum', 'viewNum', 'bid', 'activeTime', 'isAttachment', 'dislikeNum']
+    })
+    const postUserInfo = await this.userRepository.findOneOrFail({
+      where: { uid: currentArticle.uid },
+      select: ['username', 'level', 'signatrue', 'badge']
+    })
+    const postUserDetail: Omit<UserDetail, 'activeTime'> = await this.userDetailRepository.findOne({
+      where: { uid: currentArticle.uid },
+      select: ['city']
+    })
+    const newPostUserInfo = { ...postUserInfo, badge: postUserInfo.badge.split(',') }
+    return {
+      message: '看看服务君这里有没有你感兴趣的吧~',
+      status: HttpStatus.OK,
+      result: { ...currentArticle, ...newPostUserInfo, ...postUserDetail }
+    }
+  }
+
+  // 增加帖子阅读数
+  async addArticleVieNum(aid: string): Promise<CommonReturn> {
+    const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid } })
+    const newCurrentArticle = { ...currentArticle, viewNum: currentArticle.viewNum + 1 }
+    await this.articleRepository.save(newCurrentArticle)
+    return {
+      message: '欢迎大人莅临本帖，阅读数+1~',
+      status: HttpStatus.OK,
+      result: ''
+    }
+  }
+
+  // 点赞帖子
+  async likeArticle(likeArticleDto: LikeArticleDto): Promise<CommonReturn> {
+    const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid: likeArticleDto.aid } })
+    const newCurrentArticle = { ...currentArticle, likeNum: currentArticle.likeNum + 1 }
+    await this.articleRepository.save(newCurrentArticle)
+    return {
+      message: '服务君把大人的赞收录啦！',
+      status: HttpStatus.OK,
+      result: ''
+    }
+  }
+  // 点踩帖子
+  async dislikeArticle(likeArticleDto: DislikeArticleDto): Promise<CommonReturn> {
+    const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid: likeArticleDto.aid } })
+    const newCurrentArticle = { ...currentArticle, dislikeNum: currentArticle.dislikeNum + 1 }
+    await this.articleRepository.save(newCurrentArticle)
+    return {
+      message: '不喜欢也没关系，看看别的文章吧~',
+      status: HttpStatus.OK,
+      result: ''
+    }
   }
 
 }

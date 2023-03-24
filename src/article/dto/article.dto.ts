@@ -2,12 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 15:49:41
+ * @LastEditTime: 2023-03-24 16:55:42
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { PaginationConfigDto } from "src/utils/utils";
+import { Article } from "../entities/article.entity";
 
 export class PostArticleDto {
     @IsString()
@@ -68,4 +69,39 @@ export interface UserArticleReturnDto {
     viewNum: number
     userName: string
     replyNum: number
+}
+
+export class ArticleDetailDto {
+    @IsString()
+    aid: string
+}
+
+export interface ArticleDetailDto {
+    aid: string;
+    uid: number
+    title: string;
+    content: string;
+    createTime: string;
+    updateTime: string;
+    likeNum: number;
+    viewNum: number;
+    dislikeNum: number;
+    bid: string;
+    activeTime: string;
+    isAttachment: 0 | 1;
+    // 用户相关
+    username: string
+    level: number
+    signatrue: string
+    badge: string[]
+    city: string
+}
+
+export class LikeArticleDto {
+    @IsString()
+    aid: string
+}
+export class DislikeArticleDto {
+    @IsString()
+    aid: string
 }

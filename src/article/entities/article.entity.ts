@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 17:25:32
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 22:12:17
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-24 16:41:23
  * @FilePath: \minibbs\src\article\entities\article.entity.ts
  * @Description: article entity
  */
@@ -42,6 +42,12 @@ export class Article {
         comment: '点赞数'
     })
     likeNum: number
+    
+    @Column({
+        default: 0,
+        comment: '点踩数'
+    })
+    dislikeNum: number
 
     @Column({
         default: 0,

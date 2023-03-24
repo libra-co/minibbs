@@ -1,8 +1,8 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-10 23:20:13
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 21:56:36
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-24 15:58:29
 * @FilePath: /minibbs/src/user/entities/user.entity.ts
 * @Description: user 表
 */

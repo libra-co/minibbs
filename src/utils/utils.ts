@@ -1,4 +1,13 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-21 11:13:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-22 15:27:41
+ * @FilePath: /minibbs/src/utils/utils.ts
+ * @Description: utuils
+ */
 import { HttpStatus } from "@nestjs/common"
+import { IsNumber } from "class-validator"
 
 
 // 带有翻页的返回信息
@@ -16,6 +25,8 @@ export const commonCatchErrorReturn = {
 
 // 分页信息
 export class PaginationConfigDto {
+    @IsNumber()
     pageNum: number
+    @IsNumber()
     pageSize: number
 }
