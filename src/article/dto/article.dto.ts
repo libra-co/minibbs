@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-24 16:55:42
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-25 18:16:56
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
