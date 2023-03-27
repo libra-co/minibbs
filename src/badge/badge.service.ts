@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 17:46:07
+ * @LastEditTime: 2023-03-27 15:57:09
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -102,13 +102,11 @@ export class BadgeService {
     // 校验账户余额
     if (currentUser.coin < currentBadge.price) return { message: '大人，钱不够啦！服务君可不赊账噢！', status: HttpStatus.BAD_REQUEST, result: '' }
     const newUserBadgeInfo = currentUser.badge ? currentUser.badge + ',' + bid : bid
-    console.log('newUserBadgeInfo', newUserBadgeInfo)
     const newCurrentUser: User = { ...currentUser, badge: newUserBadgeInfo }
     const queryRunner = this.dataSource.createQueryRunner()
-    console.log('567', 567)
 
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await  queryRunner.connect()
+    await  queryRunner.startTransaction()
     try {
       await this.userRepository.save(newCurrentUser)
       await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: OperationType.BuyBadge })

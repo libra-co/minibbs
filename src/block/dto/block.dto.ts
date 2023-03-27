@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 15:08:52
+ * @LastEditTime: 2023-03-27 18:18:25
  * @FilePath: /minibbs/src/block/dto/block.dto.ts
  * @Description: block dto
  */
@@ -18,10 +18,6 @@ export class AddBlockDto {
 }
 
 export class ListBlockDto {
-    @IsOptional()
-    @IsString()
-    blid?: string
-
     @IsOptional()
     @IsString()
     zid?: string

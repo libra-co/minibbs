@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 15:13:42
+ * @LastEditTime: 2023-03-27 15:57:42
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -45,8 +45,8 @@ export class UserService {
     }
 
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await this.dataSource.transaction(async manager => {
         const userReesult = await manager.save(User, newUser)
@@ -165,8 +165,8 @@ export class UserService {
     }
 
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await queryRunner.manager.save(User, targetUer)
       await queryRunner.manager.save(UserDetail, targetUserDetail)

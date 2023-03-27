@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 17:42:14
+ * @LastEditTime: 2023-03-27 15:57:30
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
@@ -52,8 +52,8 @@ export class FriendService {
     newFriend.friendUid = friendUid
 
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await queryRunner.manager.save(Friend, newFriend)
       await queryRunner.commitTransaction()
@@ -72,8 +72,8 @@ export class FriendService {
   async delete(uid: number, friendUid: number): Promise<CommonReturn> {
     const currentFriendEntity = await this.friendRepository.findBy({ uid, friendUid })
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await queryRunner.manager.delete(Friend, currentFriendEntity)
       queryRunner.commitTransaction()

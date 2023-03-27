@@ -1,18 +1,19 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-03-07 21:09:26
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-26 17:13:00
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-27 17:10:20
  * @FilePath: \MINIBBS_NEST\src\comment\comment.service.ts
  * @Description: comment service
  */
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/article/entities/article.entity';
+import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
 import { MailService } from 'src/mail/mail.service';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
-import { WithCommonPaginationConfig } from 'src/utils/utils';
+import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
 import { DataSource, Repository } from 'typeorm';
 import { AddCommentDto, ListCommentDto, ListCommentReturnDto, ReadCommentDto, UserCommentDto, UserCommentReturnDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
@@ -27,6 +28,7 @@ export class CommentService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly mailService: MailService,
+    private readonly coinRecordService: CoinRecordService,
     private readonly dataSource: DataSource,
   ) { }
 
@@ -39,32 +41,45 @@ export class CommentService {
       }
     }
     newComment.uid = uid
-    await this.commentRepository.save(newComment)
-    // 通知发帖人
-    if (isNoteAriticleAuth) {
-      const articleinfo = await this.articleRepository.findOneOrFail({ where: { aid: addCommentDto.aid }, select: ['uid'] })
-      await this.mailService.create({
-        postUid: uid,
-        reciveUid: addCommentDto.ruid || articleinfo.uid,
-        title: addCommentDto.content,
-        content: addCommentDto.content,
-        aid: addCommentDto.aid
-      })
-    }
-    // 通知楼层评论人
-    if (isNoteCommentAuth) {
-      await this.mailService.create({
-        postUid: uid,
-        reciveUid: addCommentDto.ruid,
-        title: addCommentDto.content,
-        content: addCommentDto.content,
-        aid: addCommentDto.aid
-      })
-    }
-    return {
-      message: '锵锵~评论成功！',
-      status: HttpStatus.OK,
-      result: ''
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try {
+      await queryRunner.manager.save(Comment, newComment)
+      await this.coinRecordService.commentReward(uid, queryRunner)
+      // 通知发帖人
+      if (isNoteAriticleAuth) {
+        const articleinfo = await this.articleRepository.findOneOrFail({ where: { aid: addCommentDto.aid }, select: ['uid'] })
+        await this.mailService.create({
+          postUid: uid,
+          reciveUid: addCommentDto.ruid || articleinfo.uid,
+          title: addCommentDto.content,
+          content: addCommentDto.content,
+          aid: addCommentDto.aid
+        })
+      }
+      // 通知楼层评论人
+      if (isNoteCommentAuth) {
+        await this.mailService.create({
+          postUid: uid,
+          reciveUid: addCommentDto.ruid,
+          title: addCommentDto.content,
+          content: addCommentDto.content,
+          aid: addCommentDto.aid
+        })
+      }
+      await queryRunner.commitTransaction()
+      return {
+        message: '锵锵~评论成功！',
+        status: HttpStatus.OK,
+        result: ''
+      }
+    } catch (error) {
+      console.log('error', error)
+      await queryRunner.rollbackTransaction()
+      return commonCatchErrorReturn
+    } finally {
+      await queryRunner.release()
     }
   }
 
@@ -114,16 +129,36 @@ export class CommentService {
     }
   }
 
-  async delete(cid: string): Promise<CommonReturn> {
+  /**
+   * @description 删除评论
+   * @param uid 当前登录登录账户的uid
+   * @param cid 删除评论的cid
+   * @returns 
+   */
+  async delete(uid: number, cid: string): Promise<CommonReturn> {
     const deleteComment = await this.commentRepository.findOneOrFail({ where: { cid } })
-    await this.commentRepository.remove(deleteComment)
-    return {
-      message: '服务君悄悄帮你涂掉啦！',
-      status: HttpStatus.OK,
-      result: ''
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+    await queryRunner.connect()
+    try {
+      await this.commentRepository.remove(deleteComment)
+      await this.coinRecordService.deletCommentPunishment(uid, queryRunner)
+      return {
+        message: '服务君悄悄帮你涂掉啦！',
+        status: HttpStatus.OK,
+        result: ''
+      }
+    } catch (error) {
+      console.log('error', error)
+      return commonCatchErrorReturn
     }
   }
 
+  /**
+   * @description 标记单个回复为已读
+   * @param uid 当前登录账户的uid
+   * @returns 
+   */
   async readComment(uid: number, { cid }: ReadCommentDto): Promise<CommonReturn> {
     const readTarget = await this.commentRepository.findOneOrFail({ where: { cid } })
     readTarget.isRead = 1
@@ -133,23 +168,24 @@ export class CommentService {
     try {
       await querryRunner.manager.save(Comment, readTarget)
       await querryRunner.commitTransaction()
-    } catch (error) {
-      await querryRunner.rollbackTransaction()
       return {
-        message: '服务君的笔没水了诶,已读标记失败！',
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: '回复已经标记为查看过啦!!',
+        status: HttpStatus.OK,
         result: ''
       }
+    } catch (error) {
+      await querryRunner.rollbackTransaction()
+      return commonCatchErrorReturn
     } finally {
       await querryRunner.release()
     }
-    return {
-      message: '回复已经标记为查看过啦!!',
-      status: HttpStatus.OK,
-      result: ''
-    }
   }
 
+  /**
+   * @description 标记全部未读回复为已读
+   * @param uid 
+   * @returns 
+   */
   async readAllComment(uid: number): Promise<CommonReturn> {
     const readTargets = await this.commentRepository.find({ where: { ruid: uid, isRead: 0 } })
     readTargets.forEach(item => { item.isRead = 1 })
@@ -176,6 +212,11 @@ export class CommentService {
     }
   }
 
+  /**
+   * @description 用户主动回复列表
+   * @param userCommentDto 
+   * @returns 
+   */
   async userCommentList(userCommentDto: UserCommentDto): Promise<CommonReturn<WithCommonPaginationConfig<UserCommentReturnDto[]>>> {
     const { pageNum, pageSize, ...rest } = userCommentDto
     const commentList = await this.commentRepository.find({
@@ -204,5 +245,4 @@ export class CommentService {
       }
     }
   }
-
 }

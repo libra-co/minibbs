@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-14 23:10:26
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-27 16:59:39
  * @FilePath: /minibbs/src/coin/dto/coin.dto.ts
  * @Description: coin DTO
  */
@@ -44,7 +44,6 @@ export class ListCoinRecordDto {
 }
 
 // 查询列表结果
-
 export interface ListCoinRecordReturnDto {
     operationType: OperationType
     changeNum: number
@@ -53,4 +52,22 @@ export interface ListCoinRecordReturnDto {
     operatorUsername: string
     operationTime: string
 
+}
+
+export interface CommentRewardReturnDto {
+    rewardEx: number,
+    rewardCoin: number
+}
+
+export interface CreateCoinRecordDto {
+    changeNum: number
+    operatorUid: number
+    targetUid: number
+    balance: number
+    operationType: OperationType
+    
+}
+export interface DeleteCommentPunishmentReturnDto {
+    punishmentEx: number,
+    punishmentCoin: number
 }

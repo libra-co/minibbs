@@ -27,8 +27,8 @@ export class CommentController {
   }
 
   @Post('delete')
-  delete(@Body('cid') cid: string) {
-    return this.commentService.delete(cid)
+  delete(@Req() req, @Body('cid') cid: string) {
+    return this.commentService.delete(req.user.uid, cid)
   }
 
   @Post('read')

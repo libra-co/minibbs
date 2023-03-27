@@ -1,8 +1,8 @@
 /*
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-14 17:16:42
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-14 21:39:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-27 15:46:06
 * @FilePath: /minibbs/src/coin/entities/coin.entity.ts
 * @Description: coin entity
 */
@@ -20,7 +20,8 @@ export class CoinRecord {
     })
     changeNum: number
     @Column({
-        comment: '操作人uid'
+        default: 0,
+        comment: '操作人uid,默认为系统'
     })
     operatorUid: number
     @Column({
