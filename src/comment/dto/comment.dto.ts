@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-22 15:43:13
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-26 17:11:55
  * @FilePath: /minibbs/src/comment/dto/comment.dto.ts
  * @Description: comment dto
  */
@@ -51,8 +51,8 @@ export interface ListCommentReturnDto {
     commentUsername: string
     commentTime: string
     content: string
-    replyUid: number
-    replyUsername: string
+    replyUid?: number
+    replyUsername?: string
 }
 
 export class ReadCommentDto {

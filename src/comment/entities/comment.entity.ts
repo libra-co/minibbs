@@ -36,11 +36,13 @@ export class Comment {
     content: string
 
     @Column({
+        default: null,
         comment: '被回复的cid，若有值则表示回复帖子的其他评论'
     })
     rcid: string
 
     @Column({
+        default: null,
         comment: '被回复评论的评论人uid'
     })
     ruid: number

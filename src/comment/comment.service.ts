@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-03-07 21:09:26
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-22 15:49:27
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-03-26 17:13:00
  * @FilePath: \MINIBBS_NEST\src\comment\comment.service.ts
  * @Description: comment service
  */
@@ -79,16 +79,27 @@ export class CommentService {
 
     const dataList: ListCommentReturnDto[] = await Promise.all(findCommentList.map(async item => {
       const commentUser = await this.userRepository.findOneOrFail({ where: { uid: item.uid }, select: ['username'] })
-      const replyUser = await this.userRepository.findOneOrFail({ where: { uid: item.ruid }, select: ['username'] })
-      return {
-        cid: item.cid,
-        commentUid: item.uid,
-        commentUsername: commentUser.username,
-        commentTime: item.commentTime,
-        content: item.content,
-        replyUid: item.ruid,
-        replyUsername: replyUser.username,
+      if (item.ruid) {
+        const replyUser = await this.userRepository.findOneOrFail({ where: { uid: item.ruid }, select: ['username'] })
+        return {
+          cid: item.cid,
+          commentUid: item.uid,
+          commentUsername: commentUser.username,
+          commentTime: item.commentTime,
+          content: item.content,
+          replyUid: item.ruid,
+          replyUsername: replyUser.username,
+        }
+      } else {
+        return {
+          cid: item.cid,
+          commentUid: item.uid,
+          commentUsername: commentUser.username,
+          commentTime: item.commentTime,
+          content: item.content,
+        }
       }
+
     }))
     const total = await this.commentRepository.count({ where: { aid: rest.aid } })
     return {
