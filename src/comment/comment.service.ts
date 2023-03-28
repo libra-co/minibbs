@@ -93,9 +93,9 @@ export class CommentService {
     })
 
     const dataList: ListCommentReturnDto[] = await Promise.all(findCommentList.map(async item => {
-      const commentUser = await this.userRepository.findOneOrFail({ where: { uid: item.uid }, select: ['username'] })
+      const commentUser = await this.userRepository.findOne({ where: { uid: item.uid }, select: ['username'] })
       if (item.ruid) {
-        const replyUser = await this.userRepository.findOneOrFail({ where: { uid: item.ruid }, select: ['username'] })
+        const replyUser = await this.userRepository.findOne({ where: { uid: item.ruid }, select: ['username'] })
         return {
           cid: item.cid,
           commentUid: item.uid,

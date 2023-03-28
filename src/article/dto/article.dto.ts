@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-25 18:16:56
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-28 11:10:14
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
@@ -21,6 +21,9 @@ export class PostArticleDto {
     bid: string
 }
 
+export interface PostArticleReturnDto {
+    aid: string
+}
 
 export class HomeArticleListArticleDto extends PaginationConfigDto {
     @IsOptional()

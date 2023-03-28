@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 15:09:03
+ * @LastEditTime: 2023-03-28 10:36:05
  * @FilePath: /minibbs/src/block/block.service.ts
  * @Description: block service
  */
@@ -10,7 +10,7 @@ import { Body, HttpStatus, Injectable, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { Repository } from 'typeorm';
-import { AddBlockDto, EditBlockDto, ListBlockDto, ListBlockReturnDto } from './dto/block.dto';
+import { AddBlockDto, BlockDetailDto, EditBlockDto, ListBlockDto, ListBlockReturnDto } from './dto/block.dto';
 import { Block } from './entities/block.entity';
 
 @Injectable()
@@ -39,9 +39,12 @@ export class BlockService {
   async list(listBlockDto: ListBlockDto): Promise<CommonReturn<ListBlockReturnDto[]>> {
     let blockList: ListBlockReturnDto[]
     if (Object.keys(listBlockDto).length === 0) {
-      blockList = await this.blockRepository.find()
+      blockList = await this.blockRepository.find({ order: { priority: 'ASC' } })
     } else {
-      blockList = await this.blockRepository.find({ where: { ...listBlockDto } })
+      blockList = await this.blockRepository.find({
+        where: { ...listBlockDto },
+        order: { priority: 'ASC' }
+      })
     }
     return {
       message: '大人，这是服务君在小本本上的记录！',
@@ -68,6 +71,20 @@ export class BlockService {
       message: '服务君把改动记录好啦！',
       status: HttpStatus.OK,
       result: ''
+    }
+  }
+
+  // 查询板块信息
+  async blockDetail(blockDetailDto: BlockDetailDto): Promise<CommonReturn> {
+    const currentBlock = await this.blockRepository.findOneOrFail({
+      where: { blid: blockDetailDto.blid },
+      select: ['blid', 'blockName']
+    },
+    )
+    return {
+      message: '这是大人要查询的信息！',
+      status: HttpStatus.OK,
+      result: currentBlock
     }
   }
 

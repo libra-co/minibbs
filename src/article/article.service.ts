@@ -2,13 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-24 17:30:34
+ * @LastEditTime: 2023-03-28 15:46:42
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
-import { Body, HttpStatus, Injectable } from '@nestjs/common';
+import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
+import { ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
@@ -31,7 +31,7 @@ export class ArticleService {
   ) { }
 
 
-  async post(uid: number, postArticleDto: PostArticleDto): Promise<CommonReturn> {
+  async post(uid: number, postArticleDto: PostArticleDto): Promise<CommonReturn<PostArticleReturnDto> | CommonReturn> {
     const newArticle = new Article()
     for (const field in postArticleDto) {
       if (Object.prototype.hasOwnProperty.call(postArticleDto, field)) {
@@ -44,7 +44,7 @@ export class ArticleService {
       return {
         message: '服务君帮你把文章发布啦，快去看看吧！',
         status: HttpStatus.OK,
-        result: ''
+        result: { aid: saveArticleResult.aid }
       }
     }
     return commonCatchErrorReturn
@@ -158,7 +158,10 @@ export class ArticleService {
 
   // viewNum + 1
   // 返回帖子内容
-  async articleDetail({ aid }: ArticleDetailDto): Promise<CommonReturn<Article>> {
+  async articleDetail({ aid }: ArticleDetailDto): Promise<CommonReturn<Article> | CommonReturn> {
+    // throw new HttpException('message', HttpStatus.BAD_REQUEST)
+
+    
     this.addArticleVieNum(aid)
     const currentArticle = await this.articleRepository.findOneOrFail({
       where: { aid },
