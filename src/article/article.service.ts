@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-28 15:46:42
+ * @LastEditTime: 2023-03-31 14:51:17
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
@@ -52,7 +52,6 @@ export class ArticleService {
 
   async getHomeArticleList(blockAriticleArticleDto: HomeArticleListArticleDto): Promise<CommonReturn<WithCommonPaginationConfig<HomeArticleListArticleReturnDto[]>> | CommonReturn> {
     const { pageNum, pageSize, ...rest } = blockAriticleArticleDto
-    console.log('rest', rest)
     const findResult = await this.articleRepository.find({
       where: Object.keys(rest).length === 0 ? [] : [{ ...rest }],
       select: ['aid', 'title'],
@@ -159,39 +158,44 @@ export class ArticleService {
   // viewNum + 1
   // 返回帖子内容
   async articleDetail({ aid }: ArticleDetailDto): Promise<CommonReturn<Article> | CommonReturn> {
-    // throw new HttpException('message', HttpStatus.BAD_REQUEST)
-
-    
-    this.addArticleVieNum(aid)
-    const currentArticle = await this.articleRepository.findOneOrFail({
-      where: { aid },
-      select: ['aid', 'uid', 'title', 'content', 'createTime', 'updateTime', 'likeNum', 'viewNum', 'bid', 'activeTime', 'isAttachment', 'dislikeNum']
-    })
-    const postUserInfo = await this.userRepository.findOneOrFail({
-      where: { uid: currentArticle.uid },
-      select: ['username', 'level', 'signatrue', 'badge']
-    })
-    const postUserDetail: Omit<UserDetail, 'activeTime'> = await this.userDetailRepository.findOne({
-      where: { uid: currentArticle.uid },
-      select: ['city']
-    })
-    const newPostUserInfo = { ...postUserInfo, badge: postUserInfo.badge.split(',') }
-    return {
-      message: '看看服务君这里有没有你感兴趣的吧~',
-      status: HttpStatus.OK,
-      result: { ...currentArticle, ...newPostUserInfo, ...postUserDetail }
+    try {
+      this.addArticleVieNum(aid)
+      const currentArticle = await this.articleRepository.findOneOrFail({
+        where: { aid },
+        select: ['aid', 'uid', 'title', 'content', 'createTime', 'updateTime', 'likeNum', 'viewNum', 'bid', 'activeTime', 'isAttachment', 'dislikeNum']
+      })
+      const postUserInfo = await this.userRepository.findOneOrFail({
+        where: { uid: currentArticle.uid },
+        select: ['username', 'level', 'signatrue', 'badge']
+      })
+      const postUserDetail: Omit<UserDetail, 'activeTime'> = await this.userDetailRepository.findOne({
+        where: { uid: currentArticle.uid },
+        select: ['city']
+      })
+      const newPostUserInfo = { ...postUserInfo, badge: postUserInfo.badge.split(',') }
+      return {
+        message: '看看服务君这里有没有你感兴趣的吧~',
+        status: HttpStatus.OK,
+        result: { ...currentArticle, ...newPostUserInfo, ...postUserDetail }
+      }
+    } catch (error) {
+      console.log('error', error)
     }
   }
 
   // 增加帖子阅读数
   async addArticleVieNum(aid: string): Promise<CommonReturn> {
-    const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid } })
-    const newCurrentArticle = { ...currentArticle, viewNum: currentArticle.viewNum + 1 }
-    await this.articleRepository.save(newCurrentArticle)
-    return {
-      message: '欢迎大人莅临本帖，阅读数+1~',
-      status: HttpStatus.OK,
-      result: ''
+    try {
+      const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid } })
+      const newCurrentArticle = { ...currentArticle, viewNum: currentArticle.viewNum + 1 }
+      await this.articleRepository.save(newCurrentArticle)
+      return {
+        message: '欢迎大人莅临本帖，阅读数+1~',
+        status: HttpStatus.OK,
+        result: ''
+      }
+    } catch (error) {
+      console.log('error', error)
     }
   }
 

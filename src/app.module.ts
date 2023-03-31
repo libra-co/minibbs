@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 17:26:55
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-18 16:48:05
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-30 09:49:52
  * @FilePath: /minibbs/src/app.module.ts
  * @Description: 主程序入口
  */
@@ -41,4 +41,4 @@ import { CommentModule } from './comment/comment.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

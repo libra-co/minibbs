@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-27 15:57:42
+ * @LastEditTime: 2023-03-31 18:14:28
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -75,11 +75,13 @@ export class UserService {
         const friendsNum = await this.friendRepository.count({ where: { uid } })
         const user = await this.userRepository.findOneOrFail({ where: { uid } })
         const mailNum = await this.mailRepository.count({ where: { reciveUid: uid } })
+        const unreadNum = await this.mailRepository.count({ where: { reciveUid: uid, isRead: 1 } }) // 已读邮件数量
         const articleNum = await this.articleRepository.count({ where: { uid } })
         const replyNum = await this.commentRepository.count({ where: { uid } })
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
           mailNum: mailNum,
+          unreadMailNum: unreadNum,
           replyNum: replyNum,
           username: user.username,
           coin: user.coin,
@@ -106,7 +108,6 @@ export class UserService {
           status: HttpStatus.BAD_REQUEST,
           message: '未找到目标用户',
           result: '',
-
         }
       })
     } catch (error) {

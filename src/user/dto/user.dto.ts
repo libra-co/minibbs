@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 13:47:10
+ * @LastEditTime: 2023-03-31 18:00:46
  * @FilePath: \minibbs\src\user\dto\user.dto.ts
  * @Description: userDto
  */
@@ -48,6 +48,7 @@ export interface BasicProfileReturnDto extends Pick<User, PickUserFieldsInBasicP
     mailNum: number
     replyNum: number
     articleNum: number
+    unreadMailNum: number
     badge: string[]
 }
 
