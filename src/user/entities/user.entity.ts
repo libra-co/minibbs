@@ -140,7 +140,7 @@ export class User {
         default: 0,
         comment: '人气 - 浏览主页数量'
     })
-    reviews: number
+    viewNum: number
 
     @Column({
         default: 0,

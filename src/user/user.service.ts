@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-13 09:27:44
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-31 18:14:28
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-04-01 18:21:13
  * @FilePath: /minibbs/src/user/user.service.ts
  * @Description: user service
  */
@@ -68,16 +68,19 @@ export class UserService {
   }
 
   // 基础个人资料
-  async basicProfile(uid: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
-    if (!uid) return commonCatchErrorReturn
+  async basicProfile(uid: number, visitUid?: number): Promise<CommonReturn<BasicProfileReturnDto | string>> {
+    const visitingUid = visitUid || uid
+    this.addProfileNum(uid, visitUid)
+    if (!visitingUid) return commonCatchErrorReturn
     try {
       return this.dataSource.transaction(async entityManager => {
-        const friendsNum = await this.friendRepository.count({ where: { uid } })
-        const user = await this.userRepository.findOneOrFail({ where: { uid } })
-        const mailNum = await this.mailRepository.count({ where: { reciveUid: uid } })
-        const unreadNum = await this.mailRepository.count({ where: { reciveUid: uid, isRead: 1 } }) // 已读邮件数量
-        const articleNum = await this.articleRepository.count({ where: { uid } })
-        const replyNum = await this.commentRepository.count({ where: { uid } })
+        const friendsNum = await this.friendRepository.count({ where: { uid: visitingUid } })
+        const user = await this.userRepository.findOneOrFail({ where: { uid: visitingUid } })
+        const mailNum = await this.mailRepository.count({ where: { reciveUid: visitingUid } })
+        const unreadNum = await this.mailRepository.count({ where: { reciveUid: visitingUid, isRead: 1 } }) // 已读邮件数量
+        const articleNum = await this.articleRepository.count({ where: { uid: visitingUid } })
+        const replyNum = await this.commentRepository.count({ where: { uid: visitingUid } })
+        // const todayViewNum = await this.userRepository.findOne({where:})
         const returnResult: BasicProfileReturnDto = {
           friendsNum: friendsNum,
           mailNum: mailNum,
@@ -91,7 +94,7 @@ export class UserService {
           level: user.level,
           identity: user.identity,
           role: user.role,
-          reviews: user.reviews,
+          viewNum: user.viewNum,
           expireTime: user.expireTime,
           gender: user.gender,
           articleNum: articleNum,
@@ -182,6 +185,21 @@ export class UserService {
       return commonCatchErrorReturn
     } finally {
       await queryRunner.release()
+    }
+  }
+
+  /**
+   * @description 空间浏览数 +1
+   * @param visitorUid 浏览者的uid
+   * @param visitedUid 被访问的uid
+   */
+  async addProfileNum(visitorUid: number, visitedUid: number) {
+    try {
+      const visitedUser = await this.userRepository.findOneOrFail({ where: { uid: visitedUid } })
+      visitedUser.viewNum = visitedUser.viewNum + 1
+      this.userRepository.save(visitedUser)
+    } catch (error) {
+      console.log('error', error)
     }
   }
 

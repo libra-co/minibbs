@@ -22,6 +22,7 @@ import { BlockModule } from './block/block.module';
 import { ZoneModule } from './zone/zone.module';
 import { ArticleModule } from './article/article.module';
 import { CommentModule } from './comment/comment.module';
+import { ActiveLogModule } from './active-log/active-log.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommentModule } from './comment/comment.module';
     ZoneModule,
     ArticleModule,
     CommentModule,
+    ActiveLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

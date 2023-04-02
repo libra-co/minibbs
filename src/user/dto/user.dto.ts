@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
- * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-31 18:00:46
+ * @LastEditors: liuhongbo 916196375@qq.com
+ * @LastEditTime: 2023-04-01 18:11:03
  * @FilePath: \minibbs\src\user\dto\user.dto.ts
  * @Description: userDto
  */
@@ -40,7 +40,7 @@ export class CreateUserDto {
 }
 
 // 需要从User表中提取的
-type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'reviews' | 'gender'
+type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'viewNum' | 'gender'
 
 // 基本资料返回dto
 export interface BasicProfileReturnDto extends Pick<User, PickUserFieldsInBasicProfileReturnDeto> {
