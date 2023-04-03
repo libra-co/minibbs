@@ -4,8 +4,7 @@ import { AddNewCoinOperationTypeDto, EditCoinOperationTypeDto, RemoveCoinOperati
 import { OperationcoinService } from './operationCoin.service';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('coinRecord')
-@Controller('operationcoin')
+@Controller('operationCoin')
 export class OperationcoinController {
   constructor(
     private readonly operationcoinService: OperationcoinService
