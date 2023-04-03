@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-15 23:28:23
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-03 17:40:57
  * @FilePath: /minibbs/src/coinRecord/CoinRecordModule.module.ts
  * @Description: CoinRecordModule module
  */
@@ -12,9 +12,10 @@ import { CoinRecordController } from './coinRecord.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinRecord } from './entities/coinRecord.entity';
 import { User } from 'src/user/entities/user.entity';
+import { OperationCoin } from '../operationCoin/entities/operationCoin.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CoinRecord, User])],
+  imports: [TypeOrmModule.forFeature([CoinRecord, User,OperationCoin])],
   controllers: [CoinRecordController],
   providers: [CoinRecordService],
   exports: [CoinRecordService]

@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-15 14:00:33
+ * @LastEditTime: 2023-04-03 18:00:35
  * @FilePath: /minibbs/src/coin/coin.controller.ts
  * @Description: coin controller
  */
@@ -25,10 +25,5 @@ export class CoinRecordController {
   list(@Req() req, @Body() listCoinRecordDto: ListCoinRecordDto) {
     return this.coinRecordService.list(req.user.uid, listCoinRecordDto)
   }
-
-  // @Post()
-  // create(@Body() createCoinDto: CreateCoinRecordDto) {
-  //   return this.coinService.update(createCoinDto);
-  // }
 
 }

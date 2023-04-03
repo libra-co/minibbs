@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-27 15:57:09
+ * @LastEditTime: 2023-04-03 18:10:18
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -15,8 +15,8 @@ import { Badge } from './entities/badge.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { User } from 'src/user/entities/user.entity';
 import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
-import { OperationType } from 'src/coinRecord/cosnt';
 import { ReservedAccount } from 'src/user/const';
+import { CoinOperationType } from 'src/operationCoin/const';
 
 @Injectable()
 export class BadgeService {
@@ -109,7 +109,7 @@ export class BadgeService {
     await  queryRunner.startTransaction()
     try {
       await this.userRepository.save(newCurrentUser)
-      await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: OperationType.BuyBadge })
+      await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: CoinOperationType.BuyBadge })
       await queryRunner.commitTransaction()
       return {
         message: '服务君亲手把勋章给你带上啦，今天魅力又多了一分~',

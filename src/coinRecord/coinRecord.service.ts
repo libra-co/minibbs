@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-27 17:04:57
+ * @LastEditTime: 2023-04-03 17:59:50
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
@@ -10,12 +10,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { CommentRewardReturnDto, CreateCoinRecordDto, DeleteCommentPunishmentReturnDto, ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
+import { CommentRewardReturnDto, DeleteCommentPunishmentReturnDto, ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
 import { CoinRecord } from './entities/coinRecord.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
-import { OperationType } from './cosnt';
+import { CoinOperationType } from 'src/operationCoin/const';
 
 @Injectable()
 export class CoinRecordService {
@@ -112,6 +112,8 @@ export class CoinRecordService {
    * @description 用户回复奖励
    * @param uid 用户UID
    * @param startedQueryRunner 来自调用者的QueryRunner
+   * @param rewardCoin 奖励金币
+   * @param rewardEx 奖励经验值
    * @returns
    */
   async commentReward(uid: number, startedQueryRunner: QueryRunner): Promise<CommonReturn<CommentRewardReturnDto> | CommonReturn> {
@@ -124,7 +126,7 @@ export class CoinRecordService {
     const newCoinRecord = new CoinRecord()
     newCoinRecord.balance = currentUser.coin
     newCoinRecord.changeNum = rewardCoin
-    newCoinRecord.operationType = OperationType.RelyComment
+    newCoinRecord.operationType = CoinOperationType.RelyComment
     newCoinRecord.operatorUid = 0
     newCoinRecord.targetUid = uid
 
@@ -173,7 +175,7 @@ export class CoinRecordService {
     const newCoinRecord = new CoinRecord()
     newCoinRecord.balance = currentUser.coin
     newCoinRecord.changeNum = punishmentCoin
-    newCoinRecord.operationType = OperationType.RelyComment
+    newCoinRecord.operationType = CoinOperationType.RelyComment
     newCoinRecord.operatorUid = 0
     newCoinRecord.targetUid = uid
 
@@ -206,5 +208,58 @@ export class CoinRecordService {
       await queryRunner.release()
     }
   }
+
+
+  /**
+  * @description 用户回复奖励
+  * @param uid 用户UID
+  * @param operationType 操作类型
+  * @param startedQueryRunner 来自调用者的QueryRunner
+  * @returns
+  */
+  async operationReward(uid: number, operationType: CoinOperationType, startedQueryRunner: QueryRunner): Promise<CommonReturn<CommentRewardReturnDto> | CommonReturn> {
+    // 暂时写死，后期从数据库中获取
+    const rewardEx = 10
+    const rewardCoin = 30
+    const currentUser = await this.userRepository.findOneOrFail({ where: { uid } })
+    currentUser.coin += rewardCoin
+    currentUser.experience += rewardEx
+    const newCoinRecord = new CoinRecord()
+    newCoinRecord.balance = currentUser.coin
+    newCoinRecord.changeNum = rewardCoin
+    newCoinRecord.operationType = operationType
+    newCoinRecord.operatorUid = 0
+    newCoinRecord.targetUid = uid
+
+    const successReturn = {
+      message: '回复成功！',
+      status: HttpStatus.OK,
+      result: { rewardEx, rewardCoin },
+    }
+    // 如果是调用来自外部的 QueryRunner
+    if (startedQueryRunner) {
+      await startedQueryRunner.manager.save(User, currentUser)
+      await startedQueryRunner.manager.save(CoinRecord, newCoinRecord)
+      return successReturn
+    }
+    // 调用方法内部的QueryRunner
+    const queryRunner = this.datasource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try {
+      await queryRunner.manager.save(User, currentUser)
+      await queryRunner.manager.save(CoinRecord, newCoinRecord)
+      await queryRunner.commitTransaction()
+      return successReturn
+    } catch (error) {
+      console.log('error', error)
+      await queryRunner.rollbackTransaction()
+      return commonCatchErrorReturn
+    } finally {
+      await queryRunner.release()
+    }
+  }
+
+
 
 }

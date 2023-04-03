@@ -2,13 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-27 16:59:39
+ * @LastEditTime: 2023-04-03 18:01:33
  * @FilePath: /minibbs/src/coin/dto/coin.dto.ts
  * @Description: coin DTO
  */
 
 import { IsEnum, IsNumber, IsString } from "class-validator"
-import { OperationType } from "../cosnt"
+import { CoinOperationType } from "src/operationCoin/const"
 
 // 转账DTO
 export class TransferCoinRecordDto {
@@ -17,7 +17,7 @@ export class TransferCoinRecordDto {
     @IsNumber()
     targetUid: number
     @IsNumber()
-    operationType: OperationType
+    operationType: CoinOperationType
 }
 
 /**
@@ -33,8 +33,8 @@ export class ListCoinRecordDto {
     year?: string
     @IsString()
     month?: string
-    @IsEnum(OperationType)
-    operationType?: OperationType
+    @IsEnum(CoinOperationType)
+    operationType?: CoinOperationType
     @IsString()
     keyword?: string
     @IsNumber()
@@ -45,7 +45,7 @@ export class ListCoinRecordDto {
 
 // 查询列表结果
 export interface ListCoinRecordReturnDto {
-    operationType: OperationType
+    operationType: CoinOperationType
     changeNum: number
     balance: number
     operatorUid: number
@@ -64,8 +64,8 @@ export interface CreateCoinRecordDto {
     operatorUid: number
     targetUid: number
     balance: number
-    operationType: OperationType
-    
+    operationType: CoinOperationType
+
 }
 export interface DeleteCommentPunishmentReturnDto {
     punishmentEx: number,
