@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-03 18:10:18
+ * @LastEditTime: 2023-04-18 11:22:35
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -17,6 +17,7 @@ import { User } from 'src/user/entities/user.entity';
 import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
 import { ReservedAccount } from 'src/user/const';
 import { CoinOperationType } from 'src/operationCoin/const';
+import { OperationCoin } from 'src/operationCoin/entities/operationCoin.entity';
 
 @Injectable()
 export class BadgeService {
@@ -25,7 +26,7 @@ export class BadgeService {
     private readonly badgeRepository: Repository<Badge>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    // @Inject()
+    // @Inject(CoinRecordService)
     private readonly coinRecordService: CoinRecordService,
     private readonly dataSource: DataSource
   ) { }
@@ -105,8 +106,8 @@ export class BadgeService {
     const newCurrentUser: User = { ...currentUser, badge: newUserBadgeInfo }
     const queryRunner = this.dataSource.createQueryRunner()
 
-    await  queryRunner.connect()
-    await  queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await this.userRepository.save(newCurrentUser)
       await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: CoinOperationType.BuyBadge })

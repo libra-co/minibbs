@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 15:50:55
+ * @LastEditTime: 2023-04-18 17:38:54
  * @FilePath: /minibbs/src/article/article.module.ts
  * @Description: article moudle
  */
@@ -18,6 +18,7 @@ import { UserDetail } from 'src/user/entities/userDetail.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Article, User, Comment, UserDetail])],
   controllers: [ArticleController],
-  providers: [ArticleService]
+  providers: [ArticleService],
+  exports: [ArticleService]
 })
 export class ArticleModule { }

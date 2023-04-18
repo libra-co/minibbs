@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-28 11:10:14
+ * @LastEditTime: 2023-04-18 18:05:49
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
@@ -29,6 +29,11 @@ export class HomeArticleListArticleDto extends PaginationConfigDto {
     @IsOptional()
     @IsString()
     bid?: string
+
+    @IsOptional()
+    @IsNumber()
+    isNewest?: 0 | 1
+
 }
 
 export interface HomeArticleListArticleReturnDto {
@@ -105,6 +110,11 @@ export class LikeArticleDto {
     aid: string
 }
 export class DislikeArticleDto {
+    @IsString()
+    aid: string
+}
+
+export class ActiveArticleDto {
     @IsString()
     aid: string
 }

@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-03-07 21:09:26
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-27 17:10:20
+ * @LastEditTime: 2023-04-18 17:26:37
  * @FilePath: \MINIBBS_NEST\src\comment\comment.service.ts
  * @Description: comment service
  */
@@ -17,6 +17,8 @@ import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/ut
 import { DataSource, Repository } from 'typeorm';
 import { AddCommentDto, ListCommentDto, ListCommentReturnDto, ReadCommentDto, UserCommentDto, UserCommentReturnDto } from './dto/comment.dto';
 import { Comment } from './entities/comment.entity';
+import { CoinOperationType } from 'src/operationCoin/const';
+import { ArticleService } from 'src/article/article.service';
 
 @Injectable()
 export class CommentService {
@@ -29,6 +31,7 @@ export class CommentService {
     private readonly userRepository: Repository<User>,
     private readonly mailService: MailService,
     private readonly coinRecordService: CoinRecordService,
+    private readonly articleService: ArticleService,
     private readonly dataSource: DataSource,
   ) { }
 
@@ -41,12 +44,13 @@ export class CommentService {
       }
     }
     newComment.uid = uid
+    // 金币，经验变更
+    this.coinRecordService.operationCoinExChange(uid, CoinOperationType.ReplyArtical)
     const queryRunner = this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
     try {
       await queryRunner.manager.save(Comment, newComment)
-      await this.coinRecordService.commentReward(uid, queryRunner)
       // 通知发帖人
       if (isNoteAriticleAuth) {
         const articleinfo = await this.articleRepository.findOneOrFail({ where: { aid: addCommentDto.aid }, select: ['uid'] })
@@ -69,6 +73,8 @@ export class CommentService {
         })
       }
       await queryRunner.commitTransaction()
+      // 更新文章活跃时间
+      await this.articleService.activeArticle({ aid: addCommentDto.aid })
       return {
         message: '锵锵~评论成功！',
         status: HttpStatus.OK,
@@ -137,12 +143,14 @@ export class CommentService {
    */
   async delete(uid: number, cid: string): Promise<CommonReturn> {
     const deleteComment = await this.commentRepository.findOneOrFail({ where: { cid } })
+    // 金币，经验变更
+    this.coinRecordService.operationCoinExChange(uid, CoinOperationType.DeleteReply)
     const queryRunner = this.dataSource.createQueryRunner()
     await queryRunner.startTransaction()
     await queryRunner.connect()
     try {
-      await this.commentRepository.remove(deleteComment)
-      await this.coinRecordService.deletCommentPunishment(uid, queryRunner)
+      await queryRunner.manager.remove(Comment, deleteComment)
+      await queryRunner.commitTransaction()
       return {
         message: '服务君悄悄帮你涂掉啦！',
         status: HttpStatus.OK,
@@ -150,7 +158,10 @@ export class CommentService {
       }
     } catch (error) {
       console.log('error', error)
+      await queryRunner.rollbackTransaction()
       return commonCatchErrorReturn
+    } finally {
+      await queryRunner.release()
     }
   }
 

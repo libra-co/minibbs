@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AddNewCoinOperationTypeDto, EditCoinOperationTypeDto, RemoveCoinOperationTypeDto } from './dto/operationCoin.dto';
+import { AddNewCoinOperationTypeDto, EditCoinOperationTypeDto, FindOneCoinOperationTypeDto, RemoveCoinOperationTypeDto } from './dto/operationCoin.dto';
 import { OperationcoinService } from './operationCoin.service';
 
 @UseGuards(AuthGuard('jwt'))
@@ -25,5 +25,9 @@ export class OperationcoinController {
   @Post('remove')
   remove(@Req() req, @Body() removeCoinOperationTypeDto: RemoveCoinOperationTypeDto) {
     return this.operationcoinService.remove(removeCoinOperationTypeDto)
+  }
+  @Get('findOne')
+  findOne(@Query() findOneCoinOperationTypeDto: FindOneCoinOperationTypeDto) {
+    return this.operationcoinService.findOne(findOneCoinOperationTypeDto)
   }
 }

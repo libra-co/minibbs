@@ -9,14 +9,18 @@ import { MailModule } from 'src/mail/mail.module';
 import { Mail } from 'src/mail/entities/mail.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CoinRecord } from 'src/coinRecord/entities/coinRecord.entity';
-import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
+import { CoinRecordModule } from 'src/coinRecord/coinRecord.module';
+import { ArticleModule } from 'src/article/article.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Comment, Article, Mail, User, CoinRecord]),
     MailModule,
+    CoinRecordModule,
+    ArticleModule,
   ],
   controllers: [CommentController],
-  providers: [CommentService, MailService, CoinRecordService]
+  providers: [CommentService, MailService],
+  exports: [CommentService]
 })
 export class CommentModule { }

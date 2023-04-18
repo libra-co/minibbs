@@ -2,13 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-31 14:51:17
+ * @LastEditTime: 2023-04-18 18:07:24
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
+import { ActiveArticleDto, ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
@@ -16,6 +16,7 @@ import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { UserDetail } from 'src/user/entities/userDetail.entity';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ArticleService {
@@ -51,11 +52,11 @@ export class ArticleService {
   }
 
   async getHomeArticleList(blockAriticleArticleDto: HomeArticleListArticleDto): Promise<CommonReturn<WithCommonPaginationConfig<HomeArticleListArticleReturnDto[]>> | CommonReturn> {
-    const { pageNum, pageSize, ...rest } = blockAriticleArticleDto
+    const { pageNum, pageSize, isNewest, ...rest } = blockAriticleArticleDto
     const findResult = await this.articleRepository.find({
       where: Object.keys(rest).length === 0 ? [] : [{ ...rest }],
       select: ['aid', 'title'],
-      order: { activeTime: 'DESC' },
+      order: isNewest ? { createTime: 'DESC' } : { activeTime: 'DESC' },
       take: pageSize,
       skip: (pageNum - 1) * pageSize,
     })
@@ -220,6 +221,16 @@ export class ArticleService {
       status: HttpStatus.OK,
       result: ''
     }
+  }
+
+  /**
+   * @description 更新帖子活跃时间
+   * @param activeArticleDto
+   */
+  async activeArticle(activeArticleDto: ActiveArticleDto) {
+    const targetArticle = await this.articleRepository.findOne({ where: { aid: activeArticleDto.aid } })
+    targetArticle.activeTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
+    await this.articleRepository.save(targetArticle)
   }
 
 }
