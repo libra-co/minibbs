@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 21:28:11
+ * @LastEditTime: 2023-04-01 18:11:03
  * @FilePath: \minibbs\src\user\dto\user.dto.ts
  * @Description: userDto
  */
@@ -40,7 +40,7 @@ export class CreateUserDto {
 }
 
 // 需要从User表中提取的
-type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'reviews' | 'gender'
+type PickUserFieldsInBasicProfileReturnDeto = 'uid' | 'username' | 'experience' | 'coin' | 'level' | 'identity' | 'expireTime' | 'role' | 'age' | 'family' | 'viewNum' | 'gender'
 
 // 基本资料返回dto
 export interface BasicProfileReturnDto extends Pick<User, PickUserFieldsInBasicProfileReturnDeto> {
@@ -48,11 +48,12 @@ export interface BasicProfileReturnDto extends Pick<User, PickUserFieldsInBasicP
     mailNum: number
     replyNum: number
     articleNum: number
+    unreadMailNum: number
     badge: string[]
 }
 
 // 需要从 UserDetail获取到字段
-type PickUserFieldsInDetailProfileReturnDto = 'activeTime' | 'createTime' | 'qqNumber' | 'height' | 'weight' | 'constellation' | 'habbit' | 'isMarry' | 'vocation' | 'mail'
+type PickUserFieldsInDetailProfileReturnDto = 'activeTime' | 'createTime' | 'qqNumber' | 'height' | 'weight' | 'constellation' | 'habbit' | 'isMarry' | 'vocation' | 'mail' | 'city'
 
 // 详细资料返回DTO
 export interface DetailProfileReturnDto extends BasicProfileReturnDto, Pick<UserDetail, PickUserFieldsInDetailProfileReturnDto> {
@@ -111,6 +112,10 @@ export class EditProfileDto {
     @IsOptional()
     @IsString()
     habbit?: string
+
+    @IsOptional()
+    @IsString()
+    city?: string
 
     @IsOptional()
     @IsNumber()

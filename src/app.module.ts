@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 17:26:55
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-18 16:48:05
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-03 09:29:42
  * @FilePath: /minibbs/src/app.module.ts
  * @Description: 主程序入口
  */
@@ -22,6 +22,9 @@ import { BlockModule } from './block/block.module';
 import { ZoneModule } from './zone/zone.module';
 import { ArticleModule } from './article/article.module';
 import { CommentModule } from './comment/comment.module';
+import { ActiveLogModule } from './activeLog/activeLog.module';
+import { OperationcoinModule } from './operationCoin/operationCoin.module';
+
 
 @Module({
   imports: [
@@ -37,8 +40,10 @@ import { CommentModule } from './comment/comment.module';
     ZoneModule,
     ArticleModule,
     CommentModule,
+    ActiveLogModule,
+    OperationcoinModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:27
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-14 16:43:09
+ * @LastEditTime: 2023-03-31 17:48:14
  * @FilePath: \minibbs\src\mail\entities\mail.entity.ts
  * @Description: mail Entity
  */
@@ -54,4 +54,10 @@ export class Mail {
         comment: '是否删除，0 未删除，1 删除'
     })
     isDelete: 0 | 1
+
+    @Column({
+        default: 0,
+        comment: '是否已读，0 未读，1 已读'
+    })
+    isRead: 0 | 1
 }

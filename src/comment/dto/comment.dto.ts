@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 14:10:32
+ * @LastEditTime: 2023-03-26 17:11:55
  * @FilePath: /minibbs/src/comment/dto/comment.dto.ts
  * @Description: comment dto
  */
@@ -51,11 +51,25 @@ export interface ListCommentReturnDto {
     commentUsername: string
     commentTime: string
     content: string
-    replyUid: number
-    replyUsername: string
+    replyUid?: number
+    replyUsername?: string
 }
 
 export class ReadCommentDto {
     @IsString()
     cid: string
+}
+export class UserCommentDto extends PaginationConfigDto {
+    @IsOptional()
+    @IsNumber()
+    uid: number
+}
+
+export interface UserCommentReturnDto {
+    userName: string;
+    cid: string;
+    aid: string;
+    uid: number;
+    commentTime: string;
+    content: string;
 }

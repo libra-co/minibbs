@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 19:11:28
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:47:30
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-27 15:57:30
  * @FilePath: \minibbs\src\friend\friend.service.ts
  * @Description: friend service
  */
@@ -52,8 +52,8 @@ export class FriendService {
     newFriend.friendUid = friendUid
 
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await queryRunner.manager.save(Friend, newFriend)
       await queryRunner.commitTransaction()
@@ -72,8 +72,8 @@ export class FriendService {
   async delete(uid: number, friendUid: number): Promise<CommonReturn> {
     const currentFriendEntity = await this.friendRepository.findBy({ uid, friendUid })
     const queryRunner = this.dataSource.createQueryRunner()
-    queryRunner.connect()
-    queryRunner.startTransaction()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await queryRunner.manager.delete(Friend, currentFriendEntity)
       queryRunner.commitTransaction()
@@ -107,6 +107,7 @@ export class FriendService {
         username: currentUser.username,
       }
     }))
+    const total = await this.friendRepository.count({ where: { uid } })
     if (friendFinout) {
       return {
         message: '服务君把您的朋友都叫过来啦~',
@@ -115,7 +116,7 @@ export class FriendService {
           dataList: result,
           pageNum: getFriendDto.pageNum,
           pageSize: getFriendDto.pageSize,
-          total: result.length
+          total
         },
       }
     }

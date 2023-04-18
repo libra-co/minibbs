@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:44:23
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-18 11:22:35
  * @FilePath: /minibbs/src/badge/badge.service.ts
  * @Description: badge service
  */
@@ -15,8 +15,9 @@ import { Badge } from './entities/badge.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { User } from 'src/user/entities/user.entity';
 import { CoinRecordService } from 'src/coinRecord/coinRecord.service';
-import { OperationType } from 'src/coinRecord/cosnt';
 import { ReservedAccount } from 'src/user/const';
+import { CoinOperationType } from 'src/operationCoin/const';
+import { OperationCoin } from 'src/operationCoin/entities/operationCoin.entity';
 
 @Injectable()
 export class BadgeService {
@@ -25,7 +26,7 @@ export class BadgeService {
     private readonly badgeRepository: Repository<Badge>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    // @Inject()
+    // @Inject(CoinRecordService)
     private readonly coinRecordService: CoinRecordService,
     private readonly dataSource: DataSource
   ) { }
@@ -53,14 +54,17 @@ export class BadgeService {
       take: pageSize,
       skip: (pageNum - 1) * pageSize
     })
-    return {
-      message: '服务君把勋章摆到勋章墙上啦',
-      status: HttpStatus.OK,
-      result: {
-        total: badgeList.length,
-        pageNum: pageNum,
-        pageSize: pageSize,
-        dataList: badgeList,
+    if (badgeList) {
+      const total = await this.badgeRepository.count({ where: { ...queryPrams } })
+      return {
+        message: '服务君把勋章摆到勋章墙上啦',
+        status: HttpStatus.OK,
+        result: {
+          total: total,
+          pageNum: pageNum,
+          pageSize: pageSize,
+          dataList: badgeList,
+        }
       }
     }
   }
@@ -99,16 +103,14 @@ export class BadgeService {
     // 校验账户余额
     if (currentUser.coin < currentBadge.price) return { message: '大人，钱不够啦！服务君可不赊账噢！', status: HttpStatus.BAD_REQUEST, result: '' }
     const newUserBadgeInfo = currentUser.badge ? currentUser.badge + ',' + bid : bid
-    console.log('newUserBadgeInfo', newUserBadgeInfo)
     const newCurrentUser: User = { ...currentUser, badge: newUserBadgeInfo }
     const queryRunner = this.dataSource.createQueryRunner()
-    console.log('567', 567)
-    
-    queryRunner.connect()
-    queryRunner.startTransaction()
+
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
     try {
       await this.userRepository.save(newCurrentUser)
-      await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: OperationType.BuyBadge })
+      await this.coinRecordService.transfer(uid, { targetUid: ReservedAccount.stystem, changeNum: currentBadge.price, operationType: CoinOperationType.BuyBadge })
       await queryRunner.commitTransaction()
       return {
         message: '服务君亲手把勋章给你带上啦，今天魅力又多了一分~',

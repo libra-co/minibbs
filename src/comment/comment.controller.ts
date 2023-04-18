@@ -1,15 +1,15 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-19 14:14:09
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-03-22 15:47:07
  * @FilePath: /minibbs/src/comment/comment.controller.ts
  * @Description: comment controller
  */
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommentService } from './comment.service';
-import { AddCommentDto, ListCommentDto, ReadCommentDto } from './dto/comment.dto';
+import { AddCommentDto, ListCommentDto, ReadCommentDto, UserCommentDto } from './dto/comment.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('comment')
@@ -27,8 +27,8 @@ export class CommentController {
   }
 
   @Post('delete')
-  delete(@Body('cid') cid: string) {
-    return this.commentService.delete(cid)
+  delete(@Req() req, @Body('cid') cid: string) {
+    return this.commentService.delete(req.user.uid, cid)
   }
 
   @Post('read')
@@ -39,6 +39,11 @@ export class CommentController {
   @Post('readAll')
   readAllComment(@Req() req) {
     return this.commentService.readAllComment(req.user.uid)
+  }
+
+  @Post('userCommentList')
+  userComment(@Req() req, @Body() userCommentDto: UserCommentDto) {
+    return this.commentService.userCommentList({ ...userCommentDto, uid: userCommentDto.uid || req.user.uid })
   }
 
 }

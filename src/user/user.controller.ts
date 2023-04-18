@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-10 23:20:13
  * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-03-09 21:56:38
+ * @LastEditTime: 2023-04-01 18:06:22
  * @FilePath: /minibbs/src/user/user.controller.ts
  * @Description: user controller
  */
@@ -18,12 +18,12 @@ export class UserController {
 
   @Get('profile')
   getBasicProfile(@Req() req, @Query('uid') uid: number) {
-    return this.userService.basicProfile(uid || req.user.uid)
+    return this.userService.basicProfile(req.user.uid, uid)
   }
 
   @Get('detailProfile')
-  getDetailProfile(@Query('uid') uid: number) {
-    return this.userService.getDetailProfile(uid)
+  getDetailProfile(@Req() req, @Query('uid') uid: number) {
+    return this.userService.getDetailProfile(uid || req.user.uid)
   }
 
   @Post('editProfile')

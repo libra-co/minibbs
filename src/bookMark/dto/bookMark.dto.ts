@@ -14,5 +14,5 @@ export interface ListBookMarkDtoReturn {
     bmid: string
     aid: string
     bookMarkTime: string
-    // title: string
+    title: string
 }

@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 11:24:26
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 15:32:27
+ * @LastEditTime: 2023-03-23 14:37:54
  * @FilePath: \minibbs\src\bookMark\bookMark.service.ts
  * @Description: bookMark service
  */
@@ -65,22 +65,23 @@ export class BookMarkService {
       take: pageSize,
       skip: (pageNum - 1) * pageSize
     })
-    // 文章列表标题
-    const resultList = await Promise.all(bookMarkList.map(async bookMarkListItem => {
+    // 添加文章列表标题
+    const dataList = await Promise.all(bookMarkList.map(async bookMarkListItem => {
       const currentArticle = await this.articleRepository.findOneOrFail({
         where: { aid: bookMarkListItem.aid },
         select: ['title']
       })
-      return { ...bookMarkList, title: currentArticle.title }
+      return { ...bookMarkListItem, title: currentArticle.title }
     }))
+    const total = await this.bookMarkRepository.count({ where: { uid } })
     return {
       message: '这是大人的收藏簿，请大人过目！',
       status: HttpStatus.OK,
       result: {
-        dataList: bookMarkList,
+        dataList,
         pageNum,
         pageSize,
-        total: bookMarkList.length
+        total
       }
     }
   }
