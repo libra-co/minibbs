@@ -7,7 +7,7 @@
  * @Description: coin DTO
  */
 
-import { IsEnum, IsNumber, IsString } from "class-validator"
+import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
 import { CoinOperationType } from "src/operationCoin/const"
 
 // 转账DTO
@@ -25,16 +25,22 @@ export class TransferCoinRecordDto {
  * @param uid 被查询的用户id
  */
 export class ListCoinRecordDto {
+    @IsOptional()
     @IsNumber()
     uid?: number
+    @IsOptional()
     @IsNumber()
     operatorUid?: number
+    @IsOptional()
     @IsString()
     year?: string
+    @IsOptional()
     @IsString()
     month?: string
+    @IsOptional()
     @IsEnum(CoinOperationType)
     operationType?: CoinOperationType
+    @IsOptional()
     @IsString()
     keyword?: string
     @IsNumber()
