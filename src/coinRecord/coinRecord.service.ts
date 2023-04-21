@@ -2,14 +2,14 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-18 18:16:33
+ * @LastEditTime: 2023-04-20 21:00:05
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
 
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
 import { CommentRewardReturnDto, DeleteCommentPunishmentReturnDto, ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
 import { CoinRecord } from './entities/coinRecord.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -17,6 +17,7 @@ import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
 import { CoinOperationType } from 'src/operationCoin/const';
 import { OperationcoinService } from 'src/operationCoin/operationCoin.service';
+import { ActiveLog } from 'src/activeLog/entities/activeLog.entity';
 
 @Injectable()
 export class CoinRecordService {
@@ -83,14 +84,36 @@ export class CoinRecordService {
   }
 
   // 查询
+  /**
+   * 
+   * @param uid 
+   * @param listCoinRecordDto 
+   * @returns 
+   * @todo 需要添加角色校验
+   */
   async list(uid: number, listCoinRecordDto: ListCoinRecordDto): Promise<CommonReturn<WithCommonPaginationConfig<ListCoinRecordReturnDto[]> | []>> {
     // 还未做角色校验，此处强制修改为登录的uid
     if (listCoinRecordDto.uid !== uid) {
       listCoinRecordDto.uid = uid
     }
     const { pageNum, pageSize, uid: queryUid, ...queryParmms } = listCoinRecordDto
+    // 查询条件
+    const condition: Record<string, any> = {}
+    // 时间条件
+    if (queryParmms.year) {
+      condition.operationTime = Like(`${queryParmms.year}%`)
+    } else if (queryParmms.month) {
+      condition.operationTime = Like(`${queryParmms.year}-%${+queryParmms.month < 10 ? '0' + queryParmms.month : queryParmms.month}%`)
+    } else if (queryParmms.day) {
+      condition.operationTime = Like(`${queryParmms.year}-%${queryParmms.month}%-%${+queryParmms.day < 10 ? '0' + queryParmms.day : queryParmms.day}%`)
+    }
+    if (listCoinRecordDto.operationType in CoinOperationType) {
+      condition.operationType = queryParmms.operationType
+    }
+
     const findOutRecordList = await this.coinRecordRepository.find({
-      where: [{ targetUid: queryUid || uid, ...queryParmms }, { operatorUid: queryUid || uid, ...queryParmms }],
+      where: [{ targetUid: queryUid || uid, ...condition }, { operatorUid: queryUid || uid, ...condition },],
+      order: { operationTime: 'DESC' },
       take: pageSize,
       skip: (pageNum - 1) * pageSize
     })
@@ -98,7 +121,7 @@ export class CoinRecordService {
       const operatorUsername = await this.userRepository.findOneOrFail({ where: { uid: item.operatorUid }, select: ['username'] })
       return { ...item, operatorUsername: operatorUsername.username }
     }))
-    const total = await this.coinRecordRepository.count({ where: [{ targetUid: queryUid || uid, ...queryParmms }, { operatorUid: queryUid || uid, ...queryParmms }] })
+    const total = await this.coinRecordRepository.count({ where: [{ targetUid: queryUid || uid, ...condition }, { operatorUid: queryUid || uid, ...condition }] })
     return {
       message: '大人，这是您的账本！',
       status: HttpStatus.OK,

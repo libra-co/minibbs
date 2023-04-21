@@ -2,13 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-18 18:07:24
+ * @LastEditTime: 2023-04-21 15:15:40
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ActiveArticleDto, ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
+import { ActiveArticleDto, ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, SearchArticleDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
@@ -231,6 +231,6 @@ export class ArticleService {
     const targetArticle = await this.articleRepository.findOne({ where: { aid: activeArticleDto.aid } })
     targetArticle.activeTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     await this.articleRepository.save(targetArticle)
-  }
 
+  }
 }

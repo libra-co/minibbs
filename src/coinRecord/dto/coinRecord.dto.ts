@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-14 17:16:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-03 18:01:33
+ * @LastEditTime: 2023-04-20 11:19:36
  * @FilePath: /minibbs/src/coin/dto/coin.dto.ts
  * @Description: coin DTO
  */
@@ -37,6 +37,9 @@ export class ListCoinRecordDto {
     @IsOptional()
     @IsString()
     month?: string
+    @IsOptional()
+    @IsString()
+    day?: string
     @IsOptional()
     @IsEnum(CoinOperationType)
     operationType?: CoinOperationType

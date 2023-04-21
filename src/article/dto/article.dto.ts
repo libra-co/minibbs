@@ -118,3 +118,8 @@ export class ActiveArticleDto {
     @IsString()
     aid: string
 }
+
+export class SearchArticleDto {
+    @IsString()
+    keyword: string
+}
