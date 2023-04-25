@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 17:25:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-24 16:41:23
+ * @LastEditTime: 2023-04-25 16:06:09
  * @FilePath: \minibbs\src\article\entities\article.entity.ts
  * @Description: article entity
  */
@@ -58,7 +58,7 @@ export class Article {
     @Column({
         comment: '板块id'
     })
-    bid: string
+    blid: string
 
     @Column({
         default: 0,

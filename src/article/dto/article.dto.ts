@@ -2,13 +2,12 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-18 18:05:49
+ * @LastEditTime: 2023-04-25 17:38:08
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 import { PaginationConfigDto } from "src/utils/utils";
-import { Article } from "../entities/article.entity";
 
 export class PostArticleDto {
     @IsString()
@@ -18,7 +17,7 @@ export class PostArticleDto {
     content: string
 
     @IsString()
-    bid: string
+    blid: string
 }
 
 export interface PostArticleReturnDto {
@@ -28,7 +27,7 @@ export interface PostArticleReturnDto {
 export class HomeArticleListArticleDto extends PaginationConfigDto {
     @IsOptional()
     @IsString()
-    bid?: string
+    blid?: string
 
     @IsOptional()
     @IsNumber()
@@ -47,7 +46,7 @@ export interface HomeArticleListArticleReturnDto {
 export class BlockArticleListArticleDto extends PaginationConfigDto {
     @IsOptional()
     @IsString()
-    bid?: string
+    blid?: string
 
     @IsOptional()
     @IsNumber()
@@ -67,8 +66,15 @@ export interface BlockArticleListArticleReturnDto {
 }
 
 export class UserArticleListDto extends PaginationConfigDto {
+    @IsOptional()
     @IsNumber()
-    uid: number
+    uid?: number
+    @IsOptional()
+    @IsString()
+    keyword?: string
+    @IsOptional()
+    @IsUUID()
+    blid?: string
 }
 
 export interface UserArticleReturnDto {

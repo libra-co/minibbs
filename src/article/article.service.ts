@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-21 15:15:40
+ * @LastEditTime: 2023-04-25 16:06:15
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
@@ -13,7 +13,7 @@ import { Article } from './entities/article.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
 import { User } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { UserDetail } from 'src/user/entities/userDetail.entity';
 import * as dayjs from 'dayjs';
@@ -118,11 +118,19 @@ export class ArticleService {
   }
 
   // 获取用户发表的文章
-  async getUserArticle(userArticleListDto: UserArticleListDto): Promise<CommonReturn<WithCommonPaginationConfig<UserArticleReturnDto[]>> | CommonReturn> {
+  async getArticleList(userArticleListDto: UserArticleListDto): Promise<CommonReturn<WithCommonPaginationConfig<UserArticleReturnDto[]>> | CommonReturn> {
     const { pageNum, pageSize, ...rest } = userArticleListDto
+    let queryCondition: FindOptionsWhere<Article> = {}
+    if (rest.uid) {
+      queryCondition = { uid: rest.uid }
+    } else if (rest.keyword) {
+      queryCondition = { title: Like(`%${rest.keyword}%`) }
+    } else if (rest.blid) {
+      queryCondition = { blid: rest.blid }
+    }
     try {
       const articleList = await this.articleRepository.find({
-        where: { uid: rest.uid },
+        where: queryCondition,
         select: ['aid', 'title', 'createTime', 'viewNum'],
         order: { createTime: 'DESC' },
         take: pageSize,
@@ -137,7 +145,7 @@ export class ArticleService {
           replyNum: ReplyNum
         }
       }))
-      const total = await this.articleRepository.count({ where: { uid: rest.uid } })
+      const total = await this.articleRepository.count({ where: queryCondition })
       return {
         message: '看看服务君这里有没有你感兴趣的吧~',
         status: HttpStatus.OK,
@@ -163,7 +171,7 @@ export class ArticleService {
       this.addArticleVieNum(aid)
       const currentArticle = await this.articleRepository.findOneOrFail({
         where: { aid },
-        select: ['aid', 'uid', 'title', 'content', 'createTime', 'updateTime', 'likeNum', 'viewNum', 'bid', 'activeTime', 'isAttachment', 'dislikeNum']
+        select: ['aid', 'uid', 'title', 'content', 'createTime', 'updateTime', 'likeNum', 'viewNum', 'blid', 'activeTime', 'isAttachment', 'dislikeNum']
       })
       const postUserInfo = await this.userRepository.findOneOrFail({
         where: { uid: currentArticle.uid },

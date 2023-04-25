@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 14:43:12
+ * @LastEditTime: 2023-04-25 14:07:35
  * @FilePath: /minibbs/src/zone/zone.service.ts
  * @Description: zone service
  */
@@ -12,12 +12,14 @@ import { CommonReturn } from 'src/utils/commonInterface';
 import { Repository } from 'typeorm';
 import { CreateZoneDto, EditZoneDto, ListZoneDto } from './dto/zone.dto';
 import { Zone } from './entities/zone.entity';
+import { BlockService } from 'src/block/block.service';
 
 @Injectable()
 export class ZoneService {
   constructor(
     @InjectRepository(Zone)
-    private readonly zoneRepository: Repository<Zone>
+    private readonly zoneRepository: Repository<Zone>,
+    private readonly blockService: BlockService,
   ) { }
 
   async add(createZoneDto: CreateZoneDto): Promise<CommonReturn> {
@@ -33,10 +35,14 @@ export class ZoneService {
 
   async list(): Promise<CommonReturn<ListZoneDto[]>> {
     const findResult = await this.zoneRepository.find()
+    const result = await Promise.all(findResult.map(async (zoneItem) => {
+      const { result: blockList } = await this.blockService.list({ zid: zoneItem.zid });
+      return { ...zoneItem, blockList }
+    }))
     return {
       message: '这写是服务君记在小本本上的分区信息！',
       status: HttpStatus.OK,
-      result: findResult as unknown as ListZoneDto[]
+      result: result
     }
   }
 
