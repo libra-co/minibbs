@@ -2,12 +2,12 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 17:25:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-25 16:06:09
+ * @LastEditTime: 2023-04-26 14:59:43
  * @FilePath: \minibbs\src\article\entities\article.entity.ts
  * @Description: article entity
  */
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Article {
@@ -25,15 +25,22 @@ export class Article {
     @Column()
     content: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     createTime: string
 
     @Column({
         type: 'datetime',
         default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     updateTime: string
 
@@ -42,7 +49,7 @@ export class Article {
         comment: '点赞数'
     })
     likeNum: number
-    
+
     @Column({
         default: 0,
         comment: '点踩数'
@@ -74,6 +81,10 @@ export class Article {
 
     @Column({
         type: 'datetime',
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        },
         default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         comment: '活跃时间，若被回复则更新，否则为创建、更新时间'
     })

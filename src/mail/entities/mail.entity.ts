@@ -2,13 +2,13 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-13 22:32:27
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-31 17:48:14
+ * @LastEditTime: 2023-04-26 10:15:13
  * @FilePath: \minibbs\src\mail\entities\mail.entity.ts
  * @Description: mail Entity
  */
 
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Mail {
@@ -31,10 +31,12 @@ export class Mail {
     })
     title: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        comment: '回复创建日期'
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     createTime: string
 

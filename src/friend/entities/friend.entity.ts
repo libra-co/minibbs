@@ -1,14 +1,14 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 17:54:15
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-20 21:47:10
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-26 10:14:55
  * @FilePath: \minibbs\src\user\entities\friends.entity.ts
  * @Description: 好友表
  */
 
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Friend {
@@ -28,10 +28,12 @@ export class Friend {
     })
     nickName?: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        comment: '添加好友时间'
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     addTime: string
 }

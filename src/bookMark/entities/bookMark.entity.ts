@@ -1,5 +1,13 @@
+/*
+ * @Author: liuhongbo liuhongbo@dip-ai.com
+ * @Date: 2023-02-21 11:13:40
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-26 10:13:15
+ * @FilePath: /minibbs/src/bookMark/entities/bookMark.entity.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BookMark {
@@ -16,10 +24,12 @@ export class BookMark {
     })
     aid: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        comment: '收藏时间'
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     bookMarkTime: string
 }

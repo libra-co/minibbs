@@ -1,14 +1,14 @@
 /*
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-15 17:43:32
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-15 22:51:48
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-26 10:12:21
  * @FilePath: /minibbs/src/badge/entities/badge.entity.ts
  * @Description: badge entity
  */
 
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Badge {
@@ -32,9 +32,12 @@ export class Badge {
     })
     description: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     createTime: string
 

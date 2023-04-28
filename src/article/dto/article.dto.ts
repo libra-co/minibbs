@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-25 17:38:08
+ * @LastEditTime: 2023-04-27 18:03:45
  * @FilePath: /minibbs/src/article/dto/article.dto.ts
  * @Description: article dto
  */
@@ -114,10 +114,14 @@ export interface ArticleDetailDto {
 export class LikeArticleDto {
     @IsString()
     aid: string
+    @IsNumber()
+    uid: number
 }
 export class DislikeArticleDto {
     @IsString()
-    aid: string
+    aid: string    
+    @IsNumber()
+    uid: number
 }
 
 export class ActiveArticleDto {

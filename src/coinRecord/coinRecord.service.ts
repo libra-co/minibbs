@@ -2,22 +2,21 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-14 21:04:10
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-20 21:00:05
+ * @LastEditTime: 2023-04-26 15:39:02
  * @FilePath: \minibbs\src\coinRecord\coinRecord.service.ts
  * @Description: coinRecord service
  */
 
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
-import { CommentRewardReturnDto, DeleteCommentPunishmentReturnDto, ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
+import { CommentRewardReturnDto, ListCoinRecordDto, ListCoinRecordReturnDto, TransferCoinRecordDto } from './dto/coinRecord.dto';
 import { CoinRecord } from './entities/coinRecord.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CommonReturn } from 'src/utils/commonInterface';
 import { commonCatchErrorReturn, WithCommonPaginationConfig } from 'src/utils/utils';
 import { CoinOperationType } from 'src/operationCoin/const';
 import { OperationcoinService } from 'src/operationCoin/operationCoin.service';
-import { ActiveLog } from 'src/activeLog/entities/activeLog.entity';
 
 @Injectable()
 export class CoinRecordService {
@@ -100,13 +99,14 @@ export class CoinRecordService {
     // 查询条件
     const condition: Record<string, any> = {}
     // 时间条件
-    if (queryParmms.year) {
+    if (queryParmms.day && queryParmms.month && queryParmms.year) {
+      condition.operationTime = Like(`${queryParmms.year}-${+queryParmms.month < 10 ? '0' + queryParmms.month : queryParmms.month}-${+queryParmms.day < 10 ? '0' + queryParmms.day : queryParmms.day}%`)
+    } else if (queryParmms.month && queryParmms.year) {
+      condition.operationTime = Like(`${queryParmms.year}-${+queryParmms.month < 10 ? '0' + queryParmms.month : queryParmms.month}%`)
+    } else if (queryParmms.year) {
       condition.operationTime = Like(`${queryParmms.year}%`)
-    } else if (queryParmms.month) {
-      condition.operationTime = Like(`${queryParmms.year}-%${+queryParmms.month < 10 ? '0' + queryParmms.month : queryParmms.month}%`)
-    } else if (queryParmms.day) {
-      condition.operationTime = Like(`${queryParmms.year}-%${queryParmms.month}%-%${+queryParmms.day < 10 ? '0' + queryParmms.day : queryParmms.day}%`)
     }
+    // 操作类型
     if (listCoinRecordDto.operationType in CoinOperationType) {
       condition.operationType = queryParmms.operationType
     }

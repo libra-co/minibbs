@@ -2,13 +2,13 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 16:20:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-02-21 17:39:12
+ * @LastEditTime: 2023-04-26 10:14:35
  * @FilePath: /minibbs/src/comment/entities/comment.entity.ts
  * @Description: comment Entity
  */
 
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Comment {
@@ -25,9 +25,12 @@ export class Comment {
     })
     uid: number
 
-    @Column({
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        type: 'datetime'
+    @CreateDateColumn({
+        type: 'datetime',
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     commentTime: string
 

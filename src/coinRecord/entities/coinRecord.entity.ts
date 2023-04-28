@@ -2,14 +2,14 @@
 * @Author: liuhongbo liuhongbo@dip-ai.com
 * @Date: 2023-02-14 17:16:42
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-03 18:00:19
+ * @LastEditTime: 2023-04-26 10:13:35
 * @FilePath: /minibbs/src/coin/entities/coin.entity.ts
 * @Description: coin entity
 */
 
 import * as dayjs from "dayjs";
 import { CoinOperationType } from "src/operationCoin/const";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class CoinRecord {
@@ -36,10 +36,12 @@ export class CoinRecord {
         comment: '变动类型'
     })
     operationType: CoinOperationType
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        comment: '操作日期'
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     operationTime: string
 }

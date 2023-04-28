@@ -2,13 +2,13 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 12:52:25
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-03-20 13:46:01
+ * @LastEditTime: 2023-04-26 10:16:07
  * @FilePath: \minibbs\src\user\entities\userDetail.entity.ts
  * @Description: userDetail表
  */
 import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
 import * as dayjs from "dayjs";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class UserDetail {
@@ -47,9 +47,12 @@ export class UserDetail {
     })
     city?: string
 
-    @Column({
+    @CreateDateColumn({
         type: 'datetime',
-        default: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        transformer: {
+            to: (value) => value,
+            from: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+        }
     })
     createTime: string
 

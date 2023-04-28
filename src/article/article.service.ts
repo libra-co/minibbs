@@ -2,11 +2,11 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-02-21 11:13:40
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-25 16:06:15
+ * @LastEditTime: 2023-04-27 18:25:37
  * @FilePath: /minibbs/src/article/article.service.ts
  * @Description: article service
  */
-import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActiveArticleDto, ArticleDetailDto, BlockArticleListArticleDto, BlockArticleListArticleReturnDto, DislikeArticleDto, HomeArticleListArticleDto, HomeArticleListArticleReturnDto, LikeArticleDto, PostArticleDto, PostArticleReturnDto, SearchArticleDto, UserArticleListDto, UserArticleReturnDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
@@ -17,6 +17,8 @@ import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { UserDetail } from 'src/user/entities/userDetail.entity';
 import * as dayjs from 'dayjs';
+import { ActiveLogService } from 'src/activeLog/activeLog.service';
+import { CoinOperationType } from 'src/operationCoin/const';
 
 @Injectable()
 export class ArticleService {
@@ -29,6 +31,7 @@ export class ArticleService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(UserDetail)
     private readonly userDetailRepository: Repository<UserDetail>,
+    private readonly activeLogService: ActiveLogService,
   ) { }
 
 
@@ -42,6 +45,7 @@ export class ArticleService {
     newArticle.uid = uid
     const saveArticleResult = await this.articleRepository.save(newArticle)
     if (saveArticleResult) {
+      this.activeLogService.addRecord({ uid, operationType: CoinOperationType.PostArtical, aid: saveArticleResult.aid })
       return {
         message: '服务君帮你把文章发布啦，快去看看吧！',
         status: HttpStatus.OK,
@@ -117,8 +121,8 @@ export class ArticleService {
     return commonCatchErrorReturn
   }
 
-  // 获取用户发表的文章
-  async getArticleList(userArticleListDto: UserArticleListDto): Promise<CommonReturn<WithCommonPaginationConfig<UserArticleReturnDto[]>> | CommonReturn> {
+  // 查询文章
+  async getArticleList(loginUid: number, userArticleListDto: UserArticleListDto): Promise<CommonReturn<WithCommonPaginationConfig<UserArticleReturnDto[]>> | CommonReturn> {
     const { pageNum, pageSize, ...rest } = userArticleListDto
     let queryCondition: FindOptionsWhere<Article> = {}
     if (rest.uid) {
@@ -146,6 +150,11 @@ export class ArticleService {
         }
       }))
       const total = await this.articleRepository.count({ where: queryCondition })
+      // 用户操作日志
+      if (userArticleListDto.keyword) {
+        this.activeLogService.addRecord<CoinOperationType.SearchArticle>({ uid: loginUid, operationType: CoinOperationType.SearchArticle, keyword: userArticleListDto.keyword })
+      }
+
       return {
         message: '看看服务君这里有没有你感兴趣的吧~',
         status: HttpStatus.OK,
@@ -213,6 +222,7 @@ export class ArticleService {
     const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid: likeArticleDto.aid } })
     const newCurrentArticle = { ...currentArticle, likeNum: currentArticle.likeNum + 1 }
     await this.articleRepository.save(newCurrentArticle)
+    this.activeLogService.addRecord<CoinOperationType.LikeArticle>({ uid: likeArticleDto.uid, operationType: CoinOperationType.LikeArticle, aid: likeArticleDto.aid })
     return {
       message: '服务君把大人的赞收录啦！',
       status: HttpStatus.OK,
@@ -224,6 +234,7 @@ export class ArticleService {
     const currentArticle = await this.articleRepository.findOneOrFail({ where: { aid: likeArticleDto.aid } })
     const newCurrentArticle = { ...currentArticle, dislikeNum: currentArticle.dislikeNum + 1 }
     await this.articleRepository.save(newCurrentArticle)
+    this.activeLogService.addRecord<CoinOperationType.DisLikeArticle>({ uid: likeArticleDto.uid, operationType: CoinOperationType.LikeArticle, aid: likeArticleDto.aid })
     return {
       message: '不喜欢也没关系，看看别的文章吧~',
       status: HttpStatus.OK,

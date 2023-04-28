@@ -2,7 +2,7 @@
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-18 17:25:32
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-23 11:24:52
+ * @LastEditTime: 2023-04-27 18:18:18
  * @FilePath: \minibbs\src\article\article.controller.ts
  * @Description: article controller
  */
@@ -36,8 +36,8 @@ export class ArticleController {
   // 获取用户发的文章，按发布倒序
   @UseGuards(AuthGuard('jwt'))
   @Post('list')
-  getArticleList(@Body() userArticleListDto: UserArticleListDto) {
-    return this.articleService.getArticleList(userArticleListDto)
+  getArticleList(@Req() req,@Body() userArticleListDto: UserArticleListDto) {
+    return this.articleService.getArticleList(req.user.uid,userArticleListDto)
   }
 
   // 获取文章

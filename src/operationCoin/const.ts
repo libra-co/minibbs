@@ -2,7 +2,7 @@
  * @Author: liuhongbo liuhongbo@dip-ai.com
  * @Date: 2023-04-03 17:59:13
  * @LastEditors: liuhongbo liuhongbo@dip-ai.com
- * @LastEditTime: 2023-04-18 10:16:59
+ * @LastEditTime: 2023-04-27 18:04:42
  * @FilePath: /minibbs/src/operationCoin/const.ts
  * @Description: 用户金币变更
  */
@@ -20,7 +20,9 @@
  * @param Tranfer 转账
  * @param EventRewards 活动奖励
  * @param SystemOperation 系统操作
- * @param SystemOperation 游戏操作
+ * @param SearchArticle 搜索文章
+ * @param LikeArticle 搜索文章
+ * @param DisLikeArticle 搜索文章
  */
 export enum CoinOperationType {
     Login,
@@ -35,6 +37,9 @@ export enum CoinOperationType {
     Tranfer,
     EventRewards,
     SystemOperation,
+    SearchArticle,
+    LikeArticle,
+    DisLikeArticle,
     Game
 }
 
@@ -71,3 +76,4 @@ export const initReward = {
         ex: 0,
     },
 }
+

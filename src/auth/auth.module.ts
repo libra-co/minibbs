@@ -1,8 +1,8 @@
 /*
  * @Author: liuhongbo 916196375@qq.com
  * @Date: 2023-02-12 14:14:14
- * @LastEditors: liuhongbo 916196375@qq.com
- * @LastEditTime: 2023-02-12 16:02:21
+ * @LastEditors: liuhongbo liuhongbo@dip-ai.com
+ * @LastEditTime: 2023-04-27 10:31:49
  * @FilePath: \minibbs\src\auth\auth.module.ts
  * @Description: auth 身份验证module
  */
@@ -18,10 +18,17 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { jwtConstants } from './const';
 import { JwtStrategy } from './jwt.strategy';
+import { ActiveLogService } from 'src/activeLog/activeLog.service';
+import { ActiveLogModule } from 'src/activeLog/activeLog.module';
+import { ActiveLog } from 'src/activeLog/entities/activeLog.entity';
+import { Article } from 'src/article/entities/article.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserDetail]),
+    TypeOrmModule.forFeature([User, UserDetail,
+      ActiveLog, 
+      Article
+    ]),
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
@@ -30,9 +37,10 @@ import { JwtStrategy } from './jwt.strategy';
       }
     }),
     UserModule,
+    // ActiveLogModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy,JwtStrategy],
+  providers: [AuthService, LocalStrategy,JwtStrategy,ActiveLogService],
   exports:[AuthService]
 })
 export class AuthModule { }
